@@ -2,6 +2,7 @@ package com.thegameratort.mcgatekeeper;
 
 import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
+import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.command.GateCommand;
 import com.thegameratort.mcgatekeeper.limbo.LimboManager;
 import com.thegameratort.mcgatekeeper.limbo.LimboPacketQueue;
@@ -20,6 +21,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
+
 public class Mcgatekeeper implements ModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("mcgatekeeper");
@@ -27,7 +30,9 @@ public class Mcgatekeeper implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        KEY_STORE.load(FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper"));
+        Path configDir = FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper");
+        ServerIdentity.load(configDir);
+        KEY_STORE.load(configDir);
 
         // Register custom payload types
         PayloadTypeRegistry.playS2C().register(ChallengePayload.ID, ChallengePayload.CODEC);

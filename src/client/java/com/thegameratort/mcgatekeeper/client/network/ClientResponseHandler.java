@@ -13,9 +13,9 @@ public class ClientResponseHandler {
 
     public static void register(ClientKeyStore keyStore) {
         ClientPlayNetworking.registerGlobalReceiver(ChallengePayload.ID, (payload, context) -> {
-            byte[] nonce = payload.nonce();
-            byte[] signature = Ed25519Util.sign(nonce, keyStore.getPrivateKey());
-            byte[] pubKeyBytes = keyStore.getPublicKey().getEncoded();
+            String serverId = payload.serverId();
+            byte[] signature = Ed25519Util.sign(payload.nonce(), keyStore.getPrivateKey(serverId));
+            byte[] pubKeyBytes = keyStore.getPublicKey(serverId).getEncoded();
             context.responseSender().sendPacket(new ResponsePayload(pubKeyBytes, signature));
             // No UI change for normal auth — if the key is known, terrain loads normally.
         });

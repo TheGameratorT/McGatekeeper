@@ -1,6 +1,7 @@
 package com.thegameratort.mcgatekeeper.network;
 
 import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
+import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.limbo.LimboManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,12 +16,12 @@ public class ChallengeHandler {
         ServerPlayerEntity player = handler.player;
 
         if (!ServerPlayNetworking.canSend(player, ChallengePayload.ID)) {
-            player.networkHandler.disconnect(Text.literal("This server requires the McGatekeeper client mod."));
+            player.networkHandler.disconnect(Text.literal("Access to this server is restricted.\nInstall the McGatekeeper mod to connect."));
             return;
         }
 
         LimboManager.addToLimbo(player.getUuid());
         byte[] nonce = ChallengeStore.createChallenge(player.getUuid());
-        ServerPlayNetworking.send(player, new ChallengePayload(nonce, GateConfig.LIMBO_TIMEOUT_SECONDS));
+        ServerPlayNetworking.send(player, new ChallengePayload(ServerIdentity.get(), nonce, GateConfig.LIMBO_TIMEOUT_SECONDS));
     }
 }
