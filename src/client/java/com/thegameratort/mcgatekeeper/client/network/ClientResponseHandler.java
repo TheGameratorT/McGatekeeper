@@ -1,13 +1,13 @@
 package com.thegameratort.mcgatekeeper.client.network;
 
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
+import com.thegameratort.mcgatekeeper.client.auth.ClientAuthState;
 import com.thegameratort.mcgatekeeper.client.auth.ClientKeyStore;
-import com.thegameratort.mcgatekeeper.client.screen.AuthorizationScreen;
 import com.thegameratort.mcgatekeeper.network.AuthResultPayload;
+import com.thegameratort.mcgatekeeper.network.AwaitingAdminPayload;
 import com.thegameratort.mcgatekeeper.network.ChallengePayload;
 import com.thegameratort.mcgatekeeper.network.ResponsePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 
 public class ClientResponseHandler {
 
@@ -17,22 +17,15 @@ public class ClientResponseHandler {
             byte[] signature = Ed25519Util.sign(nonce, keyStore.getPrivateKey());
             byte[] pubKeyBytes = keyStore.getPublicKey().getEncoded();
             context.responseSender().sendPacket(new ResponsePayload(pubKeyBytes, signature));
+            // No UI change for normal auth — if the key is known, terrain loads normally.
+        });
 
-            // Show the pending-authorization screen over the terrain loading screen
-            context.client().execute(() -> {
-                if (context.client().currentScreen instanceof LevelLoadingScreen loadingScreen) {
-                    context.client().setScreen(new AuthorizationScreen(loadingScreen, payload.timeoutSeconds()));
-                }
-            });
+        ClientPlayNetworking.registerGlobalReceiver(AwaitingAdminPayload.ID, (payload, context) -> {
+            context.client().execute(() -> ClientAuthState.setAwaitingAdmin(payload.timeoutSeconds()));
         });
 
         ClientPlayNetworking.registerGlobalReceiver(AuthResultPayload.ID, (payload, context) -> {
-            // Auth succeeded — restore the terrain loading screen so Minecraft can finish loading
-            context.client().execute(() -> {
-                if (context.client().currentScreen instanceof AuthorizationScreen authScreen) {
-                    context.client().setScreen(authScreen.getLoadingScreen());
-                }
-            });
+            context.client().execute(ClientAuthState::clear);
         });
     }
 }
