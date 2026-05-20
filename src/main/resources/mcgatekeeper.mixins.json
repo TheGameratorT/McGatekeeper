@@ -4,7 +4,8 @@
   "package": "com.thegameratort.mcgatekeeper.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ServerPlayNetworkHandlerMixin",
+    "PacketApplyBatcherEntryMixin",
+    "ServerCommonNetworkHandlerMixin",
     "PlayerManagerMixin"
   ],
   "injectors": {

@@ -1,6 +1,7 @@
 package com.thegameratort.mcgatekeeper.network;
 
 import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
+import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.limbo.LimboManager;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
@@ -20,6 +21,6 @@ public class ChallengeHandler {
 
         LimboManager.addToLimbo(player.getUuid());
         byte[] nonce = ChallengeStore.createChallenge(player.getUuid());
-        ServerPlayNetworking.send(player, new ChallengePayload(nonce));
+        ServerPlayNetworking.send(player, new ChallengePayload(nonce, GateConfig.LIMBO_TIMEOUT_SECONDS));
     }
 }

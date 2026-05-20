@@ -3,10 +3,14 @@ package com.thegameratort.mcgatekeeper.limbo;
 import com.thegameratort.mcgatekeeper.Mcgatekeeper;
 import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
+import com.thegameratort.mcgatekeeper.network.AuthResultPayload;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,11 +35,20 @@ public class LimboManager {
         limboSet.remove(uuid);
     }
 
-    /** Release from limbo: broadcast join message and remove from limbo set. */
+    /** Release from limbo: signal the client, flush queued packets, broadcast join message. */
     public static void release(MinecraftServer server, ServerPlayerEntity player) {
         UUID uuid = player.getUuid();
         limboSet.remove(uuid);
         ChallengeStore.remove(uuid);
+
+        // Tell the client mod that auth succeeded so it can dismiss the pending screen
+        ServerPlayNetworking.send(player, new AuthResultPayload());
+
+        // Flush all queued world packets now that the player is trusted
+        List<Packet<?>> queued = LimboPacketQueue.flush(uuid);
+        for (Packet<?> packet : queued) {
+            player.networkHandler.sendPacket(packet);
+        }
 
         Text joinMessage = Text.translatable("multiplayer.player.joined", player.getDisplayName());
         server.getPlayerManager().broadcast(joinMessage, false);

@@ -4,6 +4,8 @@ import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
 import com.thegameratort.mcgatekeeper.command.GateCommand;
 import com.thegameratort.mcgatekeeper.limbo.LimboManager;
+import com.thegameratort.mcgatekeeper.limbo.LimboPacketQueue;
+import com.thegameratort.mcgatekeeper.network.AuthResultPayload;
 import com.thegameratort.mcgatekeeper.network.ChallengeHandler;
 import com.thegameratort.mcgatekeeper.network.ChallengePayload;
 import com.thegameratort.mcgatekeeper.network.ResponseHandler;
@@ -28,6 +30,7 @@ public class Mcgatekeeper implements ModInitializer {
 
         // Register custom payload types
         PayloadTypeRegistry.playS2C().register(ChallengePayload.ID, ChallengePayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(AuthResultPayload.ID, AuthResultPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(ResponsePayload.ID, ResponsePayload.CODEC);
 
         // Put every player in limbo on join and send them a challenge
@@ -38,6 +41,7 @@ public class Mcgatekeeper implements ModInitializer {
             var uuid = handler.player.getUuid();
             LimboManager.remove(uuid);
             ChallengeStore.remove(uuid);
+            LimboPacketQueue.discard(uuid);
         });
 
         // Receive and verify signed responses
