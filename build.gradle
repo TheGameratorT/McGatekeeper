@@ -43,7 +43,6 @@ dependencies {
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation include('org.bouncycastle:bcprov-jdk18on:1.78.1')
 }
 
 processResources {

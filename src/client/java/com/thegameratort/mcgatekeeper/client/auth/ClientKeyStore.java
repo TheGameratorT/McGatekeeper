@@ -6,8 +6,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import net.fabricmc.loader.api.FabricLoader;
-import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters;
-import org.bouncycastle.crypto.params.Ed25519PublicKeyParameters;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -42,14 +40,14 @@ public class ClientKeyStore {
         }
     }
 
-    /** Returns the private key for the given server, generating and persisting a new one if needed. */
-    public Ed25519PrivateKeyParameters getPrivateKey(String serverId) {
-        return Ed25519Util.decodePrivateKey(getOrCreate(serverId).privateKey());
+    /** Returns the raw private key bytes for the given server, generating and persisting a new keypair if needed. */
+    public byte[] getPrivateKey(String serverId) {
+        return Ed25519Util.decodeKey(getOrCreate(serverId).privateKey());
     }
 
-    /** Returns the public key for the given server, generating and persisting a new one if needed. */
-    public Ed25519PublicKeyParameters getPublicKey(String serverId) {
-        return Ed25519Util.decodePublicKey(getOrCreate(serverId).publicKey());
+    /** Returns the raw public key bytes for the given server, generating and persisting a new keypair if needed. */
+    public byte[] getPublicKey(String serverId) {
+        return Ed25519Util.decodeKey(getOrCreate(serverId).publicKey());
     }
 
     private StoredPair getOrCreate(String serverId) {
@@ -58,8 +56,8 @@ public class ClientKeyStore {
 
         Ed25519Util.KeyPair kp = Ed25519Util.generateKeyPair();
         pair = new StoredPair(
-            Ed25519Util.encodeKey(kp.privateKey().getEncoded()),
-            Ed25519Util.encodeKey(kp.publicKey().getEncoded())
+            Ed25519Util.encodeKey(kp.privateKey()),
+            Ed25519Util.encodeKey(kp.publicKey())
         );
         keyMap.put(serverId, pair);
         save();
