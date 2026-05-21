@@ -61,7 +61,7 @@ public class LimboManager {
             if (ChallengeStore.isExpired(uuid, GateConfig.LIMBO_TIMEOUT_SECONDS)) {
                 ServerPlayerEntity player = server.getPlayerManager().getPlayer(uuid);
                 if (player != null) {
-                    player.networkHandler.disconnect(Text.literal("Not authorised"));
+                    player.networkHandler.disconnect(Text.literal("Not authorized"));
                 } else {
                     // Player already disconnected; clean up state
                     limboSet.remove(uuid);

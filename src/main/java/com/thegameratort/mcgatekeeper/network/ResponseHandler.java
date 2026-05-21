@@ -53,12 +53,9 @@ public class ResponseHandler {
 
         if (authenticated) {
             LimboManager.release(context.server(), player);
-        } else if (storedKeys.isEmpty()) {
-            // No registered keys — tell the client to show the "waiting for admin" countdown
-            ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.LIMBO_TIMEOUT_SECONDS));
-            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} has no registered keys; an admin can run /gate allow.", player.getName().getString());
         } else {
-            Mcgatekeeper.LOGGER.warn("[McGatekeeper] {} failed authentication.", player.getName().getString());
+            ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.LIMBO_TIMEOUT_SECONDS));
+            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", player.getName().getString());
         }
     }
 }

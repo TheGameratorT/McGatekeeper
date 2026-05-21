@@ -29,7 +29,7 @@ public class ClientKeyStore {
     private Path keysFile;
 
     public void load() {
-        Path dir = FabricLoader.getInstance().getGameDir().resolve("mcgatekeeper");
+        Path dir = FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper");
         keysFile = dir.resolve("server-keys.json");
         if (!Files.exists(keysFile)) return;
         try {

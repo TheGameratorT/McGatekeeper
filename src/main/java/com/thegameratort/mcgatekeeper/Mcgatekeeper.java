@@ -14,6 +14,7 @@ import com.thegameratort.mcgatekeeper.network.ResponseHandler;
 import com.thegameratort.mcgatekeeper.network.ResponsePayload;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -31,8 +32,10 @@ public class Mcgatekeeper implements ModInitializer {
     @Override
     public void onInitialize() {
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper");
-        ServerIdentity.load(configDir);
         KEY_STORE.load(configDir);
+
+        // Load server identity only when a server actually starts, not on every client launch
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> ServerIdentity.load(configDir));
 
         // Register custom payload types
         PayloadTypeRegistry.playS2C().register(ChallengePayload.ID, ChallengePayload.CODEC);
