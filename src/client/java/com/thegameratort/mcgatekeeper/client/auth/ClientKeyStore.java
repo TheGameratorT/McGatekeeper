@@ -18,7 +18,7 @@ import java.util.Map;
 
 /**
  * Stores one Ed25519 keypair per server (keyed by server identity UUID).
- * Persisted in &lt;game-dir&gt;/mcgatekeeper/server-keys.json.
+ * Persisted in &lt;config-dir&gt;/mcgatekeeper/server-keys.json.
  */
 public class ClientKeyStore {
 
