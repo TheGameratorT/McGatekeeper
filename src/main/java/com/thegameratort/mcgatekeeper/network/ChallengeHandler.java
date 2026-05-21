@@ -22,6 +22,6 @@ public class ChallengeHandler {
 
         LimboManager.addToLimbo(player.getUuid());
         byte[] nonce = ChallengeStore.createChallenge(player.getUuid());
-        ServerPlayNetworking.send(player, new ChallengePayload(ServerIdentity.get(), nonce, GateConfig.LIMBO_TIMEOUT_SECONDS));
+        ServerPlayNetworking.send(player, new ChallengePayload(ServerIdentity.get(), nonce, GateConfig.INSTANCE.limboTimeoutSeconds));
     }
 }

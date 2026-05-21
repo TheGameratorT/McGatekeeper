@@ -4,6 +4,7 @@
   "package": "com.thegameratort.mcgatekeeper.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MinecraftDedicatedServerMixin",
     "PacketApplyBatcherEntryMixin",
     "ServerCommonNetworkHandlerMixin",
     "PlayerManagerMixin"

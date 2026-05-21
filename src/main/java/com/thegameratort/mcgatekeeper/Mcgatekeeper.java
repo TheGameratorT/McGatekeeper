@@ -3,6 +3,7 @@ package com.thegameratort.mcgatekeeper;
 import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
 import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
+import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.command.GateCommand;
 import com.thegameratort.mcgatekeeper.limbo.LimboManager;
 import com.thegameratort.mcgatekeeper.limbo.LimboPacketQueue;
@@ -32,6 +33,7 @@ public class Mcgatekeeper implements ModInitializer {
     @Override
     public void onInitialize() {
         Path configDir = FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper");
+        GateConfig.load(configDir);
         KEY_STORE.load(configDir);
 
         // Load server identity only when a server actually starts, not on every client launch

@@ -54,7 +54,7 @@ public class ResponseHandler {
         if (authenticated) {
             LimboManager.release(context.server(), player);
         } else {
-            ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.LIMBO_TIMEOUT_SECONDS));
+            ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
             Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", player.getGameProfile().name());
         }
     }

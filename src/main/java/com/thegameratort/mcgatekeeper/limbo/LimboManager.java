@@ -58,7 +58,7 @@ public class LimboManager {
     /** Called every server tick; kicks players whose challenge has timed out. */
     public static void tick(MinecraftServer server) {
         for (UUID uuid : limboSet) {
-            if (ChallengeStore.isExpired(uuid, GateConfig.LIMBO_TIMEOUT_SECONDS)) {
+            if (ChallengeStore.isExpired(uuid, GateConfig.INSTANCE.limboTimeoutSeconds)) {
                 ServerPlayerEntity player = server.getPlayerManager().getPlayer(uuid);
                 if (player != null) {
                     player.networkHandler.disconnect(Text.literal("Not authorized"));
