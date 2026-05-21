@@ -32,7 +32,7 @@ public class ResponseHandler {
         try {
             submittedKey = new Ed25519PublicKeyParameters(payload.publicKey(), 0);
         } catch (Exception e) {
-            Mcgatekeeper.LOGGER.warn("[McGatekeeper] {} sent a malformed public key.", player.getName().getString());
+            Mcgatekeeper.LOGGER.warn("[McGatekeeper] {} sent a malformed public key.", player.getGameProfile().name());
             return;
         }
 
@@ -55,7 +55,7 @@ public class ResponseHandler {
             LimboManager.release(context.server(), player);
         } else {
             ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.LIMBO_TIMEOUT_SECONDS));
-            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", player.getName().getString());
+            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", player.getGameProfile().name());
         }
     }
 }

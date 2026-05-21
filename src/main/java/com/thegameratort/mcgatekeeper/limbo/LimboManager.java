@@ -52,7 +52,7 @@ public class LimboManager {
 
         Text joinMessage = Text.translatable("multiplayer.player.joined", player.getDisplayName());
         server.getPlayerManager().broadcast(joinMessage, false);
-        Mcgatekeeper.LOGGER.info("[McGatekeeper] {} authenticated and released from limbo.", player.getName().getString());
+        Mcgatekeeper.LOGGER.info("[McGatekeeper] {} authenticated and released from limbo.", player.getGameProfile().name());
     }
 
     /** Called every server tick; kicks players whose challenge has timed out. */

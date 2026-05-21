@@ -59,7 +59,7 @@ public class GateCommand {
     private static CompletableFuture<Suggestions> suggestLimboPlayers(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
         for (ServerPlayerEntity p : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
             if (LimboManager.isInLimbo(p.getUuid())) {
-                builder.suggest(p.getName().getString());
+                builder.suggest(p.getGameProfile().name());
             }
         }
         return builder.buildFuture();
@@ -96,7 +96,7 @@ public class GateCommand {
             return 0;
         }
 
-        Mcgatekeeper.KEY_STORE.addKey(target.getUuid(), target.getName().getString(), label, pendingKey);
+        Mcgatekeeper.KEY_STORE.addKey(target.getUuid(), target.getGameProfile().name(), label, pendingKey);
         Mcgatekeeper.KEY_STORE.save();
 
         LimboManager.release(source.getServer(), target);
