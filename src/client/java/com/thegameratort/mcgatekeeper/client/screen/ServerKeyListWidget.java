@@ -43,12 +43,14 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
 
         private final ClientKeyStore.KeyEntry data;
         private final Consumer<ClientKeyStore.KeyEntry> onRemove;
-        private final String label;
+        private final String address;
+        private final String keyLabel;
 
         KeyEntry(ClientKeyStore.KeyEntry data, Consumer<ClientKeyStore.KeyEntry> onRemove) {
             this.data = data;
             this.onRemove = onRemove;
-            this.label = "Server: " + Ed25519Util.fingerprint(data.serverKeyB64())
+            this.address = data.lastKnownAddress();
+            this.keyLabel = "Server: " + Ed25519Util.fingerprint(data.serverKeyB64())
                     + "  →  Client: " + Ed25519Util.fingerprint(data.clientPublicKeyB64());
         }
 
@@ -65,7 +67,12 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
             boolean btnHov = hovered && mouseX >= bx && mouseX < bx + BTN_SIZE
                     && mouseY >= by && mouseY < by + BTN_SIZE;
 
-            context.drawTextWithShadow(mc.textRenderer, label, x + PAD, y + (h - 8) / 2, 0xFFFFFFFF);
+            if (address != null) {
+                context.drawTextWithShadow(mc.textRenderer, address, x + PAD, y + 3, 0xFFAAAAAA);
+                context.drawTextWithShadow(mc.textRenderer, keyLabel, x + PAD, y + 14, 0xFFFFFFFF);
+            } else {
+                context.drawTextWithShadow(mc.textRenderer, keyLabel, x + PAD, y + (h - 8) / 2, 0xFFFFFFFF);
+            }
             context.drawGuiTexture(RenderPipelines.GUI_TEXTURED,
                     btnHov ? CROSS_BTN_HOV : CROSS_BTN,
                     bx, by, BTN_SIZE, BTN_SIZE);
@@ -84,7 +91,9 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
 
         @Override
         public Text getNarration() {
-            return Text.literal(label);
+            return address != null
+                ? Text.literal(address + "  •  " + keyLabel)
+                : Text.literal(keyLabel);
         }
     }
 }

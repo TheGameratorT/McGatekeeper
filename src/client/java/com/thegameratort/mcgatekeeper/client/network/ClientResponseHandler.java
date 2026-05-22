@@ -3,10 +3,12 @@ package com.thegameratort.mcgatekeeper.client.network;
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.client.auth.ClientAuthState;
 import com.thegameratort.mcgatekeeper.client.auth.ClientKeyStore;
+import com.thegameratort.mcgatekeeper.mixin.client.ClientCommonNetworkHandlerAccessor;
 import com.thegameratort.mcgatekeeper.network.AwaitingAdminPayload;
 import com.thegameratort.mcgatekeeper.network.ChallengePayload;
 import com.thegameratort.mcgatekeeper.network.ResponsePayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
+import net.minecraft.client.network.ServerInfo;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,9 @@ public class ClientResponseHandler {
             byte[] clientPubKey = keyStore.getPublicKey(payload.serverPublicKey());
             byte[] clientSignature = Ed25519Util.sign(message, clientPrivKey);
             context.responseSender().sendPacket(new ResponsePayload(clientPubKey, clientSignature));
+
+            ServerInfo serverInfo = ((ClientCommonNetworkHandlerAccessor) context.networkHandler()).mcgatekeeper_getServerInfo();
+            if (serverInfo != null) keyStore.updateAddress(payload.serverPublicKey(), serverInfo.address);
         });
 
         ClientConfigurationNetworking.registerGlobalReceiver(AwaitingAdminPayload.ID, (payload, context) -> {

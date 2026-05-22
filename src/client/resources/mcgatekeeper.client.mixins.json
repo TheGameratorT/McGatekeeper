@@ -4,6 +4,7 @@
   "package": "com.thegameratort.mcgatekeeper.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "ClientCommonNetworkHandlerAccessor",
     "ConnectScreenMixin"
   ],
   "injectors": {

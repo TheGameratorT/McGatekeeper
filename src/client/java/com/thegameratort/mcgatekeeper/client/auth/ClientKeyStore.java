@@ -35,10 +35,10 @@ public class ClientKeyStore {
     private static final Logger LOGGER = LoggerFactory.getLogger("mcgatekeeper");
 
     /** One server's client keypair as stored in JSON. */
-    private record StoredPair(String privateKey, String publicKey) {}
+    private record StoredPair(String privateKey, String publicKey, String lastKnownAddress) {}
 
-    /** A displayable entry: server public key (base64) and the corresponding client public key (base64). */
-    public record KeyEntry(String serverKeyB64, String clientPublicKeyB64) {}
+    /** A displayable entry: server public key (base64), client public key (base64), and last known server address. */
+    public record KeyEntry(String serverKeyB64, String clientPublicKeyB64, String lastKnownAddress) {}
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, StoredPair> keyMap = new HashMap<>(); // server public key (base64) → client keypair
@@ -75,7 +75,8 @@ public class ClientKeyStore {
         Ed25519Util.KeyPair kp = Ed25519Util.generateKeyPair();
         pair = new StoredPair(
             Ed25519Util.encodeKey(kp.privateKey()),
-            Ed25519Util.encodeKey(kp.publicKey())
+            Ed25519Util.encodeKey(kp.publicKey()),
+            null
         );
         keyMap.put(serverKeyB64, pair);
         save();
@@ -84,11 +85,21 @@ public class ClientKeyStore {
         return pair;
     }
 
+    /** Records the last known server address for the given server public key. */
+    public void updateAddress(byte[] serverPublicKey, String address) {
+        String key = Ed25519Util.encodeKey(serverPublicKey);
+        StoredPair pair = keyMap.get(key);
+        if (pair == null || address == null) return;
+        if (address.equals(pair.lastKnownAddress())) return;
+        keyMap.put(key, new StoredPair(pair.privateKey(), pair.publicKey(), address));
+        save();
+    }
+
     /** Returns a snapshot of all known server→client key pairs for display. */
     public List<KeyEntry> getEntries() {
         List<KeyEntry> list = new ArrayList<>(keyMap.size());
         for (Map.Entry<String, StoredPair> e : keyMap.entrySet()) {
-            list.add(new KeyEntry(e.getKey(), e.getValue().publicKey()));
+            list.add(new KeyEntry(e.getKey(), e.getValue().publicKey(), e.getValue().lastKnownAddress()));
         }
         return list;
     }
