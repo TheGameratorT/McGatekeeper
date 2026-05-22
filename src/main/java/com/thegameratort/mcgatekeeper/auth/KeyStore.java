@@ -27,7 +27,7 @@ public class KeyStore {
     private final Map<String, PlayerData> data = new HashMap<>(); // keyed by UUID string
     private Path filePath;
 
-    public void load(Path configDir) {
+    public synchronized void load(Path configDir) {
         filePath = configDir.resolve("players.json");
         if (!Files.exists(filePath)) return;
         try {
@@ -40,7 +40,7 @@ public class KeyStore {
         }
     }
 
-    public void save() {
+    public synchronized void save() {
         if (filePath == null) return;
         try {
             Files.createDirectories(filePath.getParent());
@@ -50,7 +50,7 @@ public class KeyStore {
         }
     }
 
-    public void addKey(UUID uuid, String username, String label, String publicKey) {
+    public synchronized void addKey(UUID uuid, String username, String label, String publicKey) {
         String id = uuid.toString();
         data.computeIfAbsent(id, k -> new PlayerData(username)).username = username;
         PlayerData pd = data.get(id);
@@ -58,33 +58,33 @@ public class KeyStore {
         pd.keys.add(new KeyEntry(label, publicKey));
     }
 
-    public void removeAllKeys(UUID uuid) {
+    public synchronized void removeAllKeys(UUID uuid) {
         data.remove(uuid.toString());
     }
 
-    public boolean removeKey(UUID uuid, String label) {
+    public synchronized boolean removeKey(UUID uuid, String label) {
         PlayerData pd = data.get(uuid.toString());
         if (pd == null) return false;
         return pd.keys.removeIf(e -> e.label().equals(label));
     }
 
-    public List<KeyEntry> getKeys(UUID uuid) {
+    public synchronized List<KeyEntry> getKeys(UUID uuid) {
         PlayerData pd = data.get(uuid.toString());
-        return pd == null ? Collections.emptyList() : Collections.unmodifiableList(pd.keys);
+        return pd == null ? Collections.emptyList() : new ArrayList<>(pd.keys);
     }
 
-    public boolean hasAnyKey(UUID uuid) {
+    public synchronized boolean hasAnyKey(UUID uuid) {
         PlayerData pd = data.get(uuid.toString());
         return pd != null && !pd.keys.isEmpty();
     }
 
-    public String getUsername(UUID uuid) {
+    public synchronized String getUsername(UUID uuid) {
         PlayerData pd = data.get(uuid.toString());
         return pd == null ? uuid.toString() : pd.username;
     }
 
     /** Returns all UUIDs that have at least one key stored. */
-    public Set<String> getAllUuids() {
-        return Collections.unmodifiableSet(data.keySet());
+    public synchronized Set<String> getAllUuids() {
+        return new HashSet<>(data.keySet());
     }
 }
