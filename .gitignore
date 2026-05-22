@@ -21,5 +21,8 @@ hs_err_pid*
 run
 *.jar
 
+# Decompiled game sources (generated locally via genSources)
+game_decomp/
+
 # Testing
 test-keys.json

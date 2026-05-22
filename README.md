@@ -43,6 +43,8 @@ No passwords. No shared secrets. Nothing to forget or leak.
 2. Drop `McGatekeeper-<version>.jar` into your `mods/` folder.
 3. That's it. Keys are generated and managed automatically.
 
+You can view and manage your stored keys from the Mods screen (via Mod Menu) → McGatekeeper → Manage Keys. Each entry shows the server address the key was last used with, alongside short fingerprints for the server and client keys. You can delete individual keys or export/import the full set.
+
 ---
 
 ## Connecting for the first time
@@ -110,7 +112,7 @@ The config file is created automatically at `config/mcgatekeeper/config.json`:
 | `config/mcgatekeeper/config.json` | Server configuration (see above) |
 | `config/mcgatekeeper/server.key` | The server's own key pair, generated once. **Back this up.** If lost, all client keys become invalid and every player must be re-approved. |
 | `config/mcgatekeeper/players.json` | Approved player keys, indexed by UUID |
-| *(client)* see below | Per-server key pairs, stored on each player's computer |
+| *(client)* see below | Per-server key pairs and last known server address, stored on each player's computer |
 
 Client keys are stored **outside** the Minecraft instance directory so they are never accidentally shared when exporting or copying a modpack. The location depends on your operating system:
 

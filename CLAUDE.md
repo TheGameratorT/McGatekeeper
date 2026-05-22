@@ -54,7 +54,7 @@ The configuration phase is a natural hold point: Minecraft doesn't advance the p
 ### Key storage
 
 - **Server** (`config/mcgatekeeper/players.json`): maps player UUID → list of `{label, username, publicKey}` entries (raw 32-byte Ed25519 keys, Base64-encoded). Managed via `/gate allow|reset|list`.
-- **Client** (OS data directory, outside the instance folder): maps server public key (Base64) → Ed25519 `{privateKey, publicKey}` pair. Keys are generated automatically on first connection to each server. The file is stored at `$XDG_DATA_HOME/mcgatekeeper/<hash>/server-keys.json` on Linux (Flatpak-compatible), `~/Library/Application Support/mcgatekeeper/<hash>/server-keys.json` on macOS, and `%APPDATA%/mcgatekeeper/<hash>/server-keys.json` on Windows, where `<hash>` is the first 16 hex digits of SHA-256 of the absolute game directory path. This prevents key leakage when sharing or exporting an instance.
+- **Client** (OS data directory, outside the instance folder): maps server public key (Base64) → Ed25519 `{privateKey, publicKey, lastKnownAddress}` entries. Keys are generated automatically on first connection to each server; `lastKnownAddress` is updated on every successful authentication from `ServerInfo.address`. The file is stored at `$XDG_DATA_HOME/mcgatekeeper/<hash>/server-keys.json` on Linux (Flatpak-compatible), `~/Library/Application Support/mcgatekeeper/<hash>/server-keys.json` on macOS, and `%APPDATA%/mcgatekeeper/<hash>/server-keys.json` on Windows, where `<hash>` is the first 16 hex digits of SHA-256 of the absolute game directory path. This prevents key leakage when sharing or exporting an instance.
 - **Server identity** (`config/mcgatekeeper/server.key`): persisted Ed25519 keypair (JSON). Generated once. The public key identifies the server; the private key signs challenges so the client can detect relay attacks.
 
 ### Configuration
@@ -89,99 +89,37 @@ JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew remapJar       # remap after co
 
 ## Exploring Minecraft sources for mixin development
 
-Fabric Loom downloads Yarn-remapped Minecraft jars into the Gradle cache. These are the jars the compiler sees and are the right place to look when writing mixins.
-
-### Locating the jars
+The `game_decomp/` directory contains Yarn-named Minecraft sources decompiled by Fabric Loom. Browse them directly with the Read tool when writing or debugging mixins:
 
 ```
-~/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/
-  minecraft-common/<version>/minecraft-common-<version>.jar   ← server+shared classes
-  minecraft-clientonly/<version>/minecraft-clientonly-<version>.jar
+game_decomp/
+  common/    – server+shared classes  (net/minecraft/server/…, etc.)
+  client/    – client-only classes    (net/minecraft/client/…, etc.)
 ```
 
-The version string encodes both the MC version and the Yarn build:
+All class and method names use Yarn's human-readable names (e.g. `MinecraftDedicatedServer`, `PlayerManager`, `ClientConfigurationNetworkHandler`).
 
-```
-1.21.11-net.fabricmc.yarn.1_21_11.1.21.11+build.5-v2
-```
+### Generating game_decomp
 
-All class and method names in these jars use Yarn's human-readable names (e.g. `MinecraftDedicatedServer`, `setupServer`, `PlayerManager`).
-
-### Listing classes in a jar
+If the directory is missing, generate it with:
 
 ```sh
-jar tf ~/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/minecraft-common/<version>/minecraft-common-<version>.jar \
-  | grep -i dedicated
+JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew genSources
+
+ROOT=$(pwd)
+COMMON_SRC=$(find .gradle/loom-cache/minecraftMaven/net/minecraft -name "minecraft-common-*-sources.jar" | head -1)
+CLIENT_SRC=$(find .gradle/loom-cache/minecraftMaven/net/minecraft -name "minecraft-clientOnly-*-sources.jar" | head -1)
+
+mkdir -p game_decomp/common game_decomp/client
+(cd game_decomp/common && jar xf "$ROOT/$COMMON_SRC")
+(cd game_decomp/client && jar xf "$ROOT/$CLIENT_SRC")
 ```
 
-### Disassembling a class (javap)
-
-Always extract into `/tmp` — never run `jar xf` from inside the project directory or it will litter the workspace with a `net/` tree.
-
-```sh
-jar xf ~/.gradle/caches/.../minecraft-common-<version>.jar \
-  --dir /tmp \
-  net/minecraft/server/dedicated/MinecraftDedicatedServer.class
-
-# Signatures only (good for finding method names)
-javap -p /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class
-
-# Full bytecode
-javap -c -p /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class
-```
-
-**Finding `@Redirect` ordinals** — the `ordinal` field in `@At` counts from 0 among all invocations of the target method *with the same descriptor* within the enclosing method. To count them correctly, extract the method body and grep for the specific invoke instruction:
-
-```sh
-javap -c -p /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class \
-  | awk '/boolean setupServer/{found=1} found && /^  [a-zA-Z]/ && !/setupServer/{exit} found{print}' \
-  | grep "invokevirtual.*isOnlineMode"
-```
-
-Each matching line corresponds to an ordinal (0, 1, 2, …) in declaration order. Methods with different descriptors (`warn(String)V` vs `warn(String, Object)V`) have independent ordinal sequences.
-
-**Checking the branch direction** — after finding the call site, look at the instruction immediately after to know what return value skips the block. For the offline-mode check in `setupServer`:
-
-```
-509: invokevirtual isOnlineMode()Z
-512: ifne 559        ← "if not equal to zero" (i.e. if true), jump to 559
-515: getstatic LOGGER
-518: ldc "**** SERVER IS RUNNING..."
-521: invokeinterface Logger.warn
-...
-559: ...             ← block is skipped when isOnlineMode() returns true
-```
-
-Returning `true` from the redirect causes `ifne` to jump over the block, suppressing all four warns.
-
-**Checking the constant pool owner** — when the invoke instruction references `#NNN`, use `-verbose` to resolve the full class:
-
-```sh
-javap -c -p -verbose /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class | grep -A 2 "#643"
-# → #643 = Methodref  net/minecraft/server/dedicated/MinecraftDedicatedServer.isOnlineMode:()Z
-```
-
-Use this fully-qualified descriptor as the `@At` target string.
-
-### Decompiling a class
-
-`javap` shows bytecode; for source-level reading use a decompiler. CFR is convenient:
-
-```sh
-# Download CFR once
-curl -L https://github.com/leibnitz27/cfr/releases/latest/download/cfr.jar -o /tmp/cfr.jar
-
-# Decompile a single class from inside the jar
-java -jar /tmp/cfr.jar \
-  ~/.gradle/caches/.../minecraft-common-<version>.jar \
-  --classname net.minecraft.server.dedicated.MinecraftDedicatedServer
-```
-
-The output is readable Java that closely matches what Yarn-named sources look like.
+`genSources` takes a few minutes the first time (Vineflower decompiles the full game). The sources JARs land in `.gradle/loom-cache/minecraftMaven/net/minecraft/` with a project-specific hash in the name; the `find` command handles that automatically.
 
 ### Intermediary names
 
-The `-intermediary` jars use Mojang's obfuscated names remapped to stable `class_XXXX`/`method_XXXXX` intermediary names instead of Yarn. You rarely need these directly — Loom handles the translation — but they are useful if a Yarn mapping is missing and you need to reference the stable intermediary name in a mixin target.
+Fabric API source jars use intermediary names (`class_XXXX` / `method_XXXXX`) instead of Yarn. These appear when reading Fabric API sources extracted from the Gradle cache. Loom handles the translation at compile time; you rarely need to reference intermediary names directly, but `~/.gradle/caches/fabric-loom/1.21.11/intermediary-v2.tiny` maps them if needed.
 
 ## Mixins
 
@@ -193,6 +131,7 @@ All mixins live under `com.thegameratort.mcgatekeeper.mixin` (server) or `com.th
 | `ServerConfigurationNetworkHandlerAccessor` | `ServerConfigurationNetworkHandler` | `@Accessor` to read the `profile` field (a `GameProfile`) from the configuration handler. Used by `GateConfigurationTask` and `ResponseHandler`. |
 | `ServerLoginNetworkHandlerMixin` | `ServerLoginNetworkHandler` | `@Redirect` suppressing `disconnectDuplicateLogins` during `tickVerify`. Vanilla calls it before auth completes; `ResponseHandler` handles the kick once the auth outcome is known. |
 | `ConnectScreenMixin` *(client)* | `ConnectScreen` | `@ModifyArg` on the `render` method: replaces the connection status text with a countdown when `ClientAuthState.isAwaitingAdmin()` is true. |
+| `ClientCommonNetworkHandlerAccessor` *(client)* | `ClientCommonNetworkHandler` | `@Accessor` to read the `serverInfo` field (a `ServerInfo`). Used by `ClientResponseHandler` to record `ServerInfo.address` as `lastKnownAddress` after each successful authentication. `getCurrentServerEntry()` on `MinecraftClient` cannot be used here because it delegates to the play-phase handler, which is null during the configuration phase. |
 
 ### `@Shadow @Final` on records
 
