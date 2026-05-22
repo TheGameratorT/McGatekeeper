@@ -116,18 +116,18 @@ jar tf ~/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/minecraft-commo
 
 ### Disassembling a class (javap)
 
-Extract the `.class` file then run `javap`:
+Always extract into `/tmp` — never run `jar xf` from inside the project directory or it will litter the workspace with a `net/` tree.
 
 ```sh
-cd /tmp
 jar xf ~/.gradle/caches/.../minecraft-common-<version>.jar \
+  --dir /tmp \
   net/minecraft/server/dedicated/MinecraftDedicatedServer.class
 
 # Signatures only (good for finding method names)
-javap -p MinecraftDedicatedServer.class
+javap -p /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class
 
 # Full bytecode
-javap -c -p MinecraftDedicatedServer.class
+javap -c -p /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class
 ```
 
 **Finding `@Redirect` ordinals** — the `ordinal` field in `@At` counts from 0 among all invocations of the target method *with the same descriptor* within the enclosing method. To count them correctly, extract the method body and grep for the specific invoke instruction:
@@ -157,7 +157,7 @@ Returning `true` from the redirect causes `ifne` to jump over the block, suppres
 **Checking the constant pool owner** — when the invoke instruction references `#NNN`, use `-verbose` to resolve the full class:
 
 ```sh
-javap -c -p -verbose /tmp/.../MinecraftDedicatedServer.class | grep -A 2 "#643"
+javap -c -p -verbose /tmp/net/minecraft/server/dedicated/MinecraftDedicatedServer.class | grep -A 2 "#643"
 # → #643 = Methodref  net/minecraft/server/dedicated/MinecraftDedicatedServer.isOnlineMode:()Z
 ```
 
