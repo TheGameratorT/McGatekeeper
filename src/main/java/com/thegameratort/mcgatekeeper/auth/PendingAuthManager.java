@@ -137,7 +137,7 @@ public class PendingAuthManager {
     /** Called each server tick to disconnect entries whose challenge has timed out. */
     public static void tick() {
         long now = System.currentTimeMillis();
-        long timeoutMs = GateConfig.INSTANCE.limboTimeoutSeconds * 1000L;
+        long timeoutMs = GateConfig.INSTANCE.authTimeoutSeconds * 1000L;
         for (Entry e : new ArrayList<>(pending.values())) {
             if (now - e.createdMs > timeoutMs) {
                 if (pending.remove(e.handler, e)) {

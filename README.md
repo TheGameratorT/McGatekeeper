@@ -91,14 +91,14 @@ The config file is created automatically at `config/mcgatekeeper/config.json`:
 
 ```json
 {
-  "limboTimeoutSeconds": 30,
+  "authTimeoutSeconds": 30,
   "replaceOfflineModeWarning": true
 }
 ```
 
 | Option | Default | Description |
 |---|---|---|
-| `limboTimeoutSeconds` | `30` | How long (in seconds) a connecting player has to complete authentication before being disconnected. Increase this if players have very slow connections. |
+| `authTimeoutSeconds` | `30` | How long (in seconds) a connecting player has to complete authentication before being disconnected. Increase this if players have very slow connections. |
 | `replaceOfflineModeWarning` | `true` | Suppresses Minecraft's four console warnings about running in offline mode and replaces them with a single info line confirming McGatekeeper is active. |
 
 ---
@@ -166,7 +166,7 @@ Authentication occurs entirely during Minecraft's **configuration phase**, befor
 
 - No player can enter the world without completing authentication.
 - If the player disconnects during authentication, the pending state is cleaned up immediately.
-- If authentication takes longer than `limboTimeoutSeconds`, the connection is closed.
+- If authentication takes longer than `authTimeoutSeconds`, the connection is closed.
 - If a second connection from the same account arrives while one is already authenticated or transitioning to the play state, the new connection is rejected.
 
 ### Key storage
@@ -180,7 +180,7 @@ Private keys are stored in plaintext in the Fabric config directory (`config/mcg
 
 - **Compromised client machine.** If an attacker has access to a player's computer and can read their `server-keys.json`, they can impersonate that player. Revoke the key with `/gate reset <player> <label>` if a device is compromised.
 - **Compromised server files.** The server stores approved public keys in `players.json`. If an attacker can modify this file, they can add their own key. This is a server file-system security concern, not a protocol concern.
-- **Denial of service.** McGatekeeper does not rate-limit connection attempts. A flood of connections will consume server resources during the authentication phase. The `limboTimeoutSeconds` timeout limits how long each unauthenticated connection can hold a slot.
+- **Denial of service.** McGatekeeper does not rate-limit connection attempts. A flood of connections will consume server resources during the authentication phase. The `authTimeoutSeconds` timeout limits how long each unauthenticated connection can hold a slot.
 - **UUID collisions or Mojang account takeover.** McGatekeeper trusts the UUID provided during the login phase. On offline-mode servers this UUID is derived from the username and is not validated by Mojang. Protect your server from username-spoofing at the network level (firewall, VPN, etc.).
 
 ---

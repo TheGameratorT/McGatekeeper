@@ -14,7 +14,7 @@ public class GateConfig {
 
     public static GateConfig INSTANCE = new GateConfig();
 
-    public int limboTimeoutSeconds = 30;
+    public int authTimeoutSeconds = 30;
     public boolean replaceOfflineModeWarning = true;
 
     public static void load(Path configDir) {

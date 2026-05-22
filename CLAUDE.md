@@ -14,7 +14,6 @@ src/
     auth/         – Ed25519 primitives, PendingAuthManager, KeyStore, ServerIdentity
     command/      – /gate allow|reset|list (operator-only, OP level 3)
     config/       – GateConfig: JSON config file loader/saver
-    limbo/        – empty; legacy directory from a prior architecture
     mixin/        – server mixins (see Mixins section below)
     network/      – custom payload types, GateConfigurationTask, ResponseHandler
     Mcgatekeeper.java – ModInitializer: wires everything together
@@ -36,7 +35,7 @@ Authentication happens entirely during Minecraft's **configuration phase** — t
 4. `ResponseHandler` verifies the signature against `KeyStore` entries for that player UUID.
    - **Success**: `PendingAuthManager.markInTransition(uuid)` is called first (see below), then `disconnectOthers` kicks any sibling pending or awaiting-admin sessions, then `disconnectDuplicateLogins` kicks any in-play duplicate, and finally `PendingAuthManager.complete` calls `completeTask(GateConfigurationTask.KEY)`, releasing the player into the play state.
    - **Unknown key**: `PendingAuthManager.tryAwaitAdmin` attempts to claim the awaiting-admin slot for this UUID. If another session for the same UUID is already in `pending`, already in `inTransition`, or already awaiting admin, the new connection is rejected immediately — `AwaitingAdminPayload` is only sent when no sibling exists. Admin runs `/gate allow <player> <label>` to register the key and call `complete`.
-5. `PendingAuthManager.tick()` (every server tick via `ServerTickEvents.END_SERVER_TICK`): players whose challenge has expired (`limboTimeoutSeconds`) are disconnected.
+5. `PendingAuthManager.tick()` (every server tick via `ServerTickEvents.END_SERVER_TICK`): players whose challenge has expired (`authTimeoutSeconds`) are disconnected.
 6. If the player disconnects during configuration, `ServerConfigurationConnectionEvents.DISCONNECT` cleans up `PendingAuthManager`.
 
 ### In-transition state
@@ -50,7 +49,7 @@ Authentication happens entirely during Minecraft's **configuration phase** — t
 
 ### Why configuration phase instead of packet interception
 
-The configuration phase is a natural hold point: Minecraft doesn't advance the player to the play state until all configuration tasks call `completeTask`. No custom packet interception is needed. The old architecture used limbo packet queuing with two mixins; that has been removed.
+The configuration phase is a natural hold point: Minecraft doesn't advance the player to the play state until all configuration tasks call `completeTask`. No custom packet interception is needed.
 
 ### Key storage
 
@@ -64,7 +63,7 @@ The configuration phase is a natural hold point: Minecraft doesn't advance the p
 
 ```json
 {
-  "limboTimeoutSeconds": 30,
+  "authTimeoutSeconds": 30,
   "replaceOfflineModeWarning": true
 }
 ```

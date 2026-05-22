@@ -30,7 +30,7 @@ public class GateConfigurationTask implements ServerPlayerConfigurationTask {
         byte[] message = Ed25519Util.buildSignedMessage(ServerIdentity.getPublicKey(), nonce);
         byte[] serverSignature = Ed25519Util.sign(message, ServerIdentity.getPrivateKey());
         sender.accept(ServerConfigurationNetworking.createS2CPacket(
-            new ChallengePayload(nonce, GateConfig.INSTANCE.limboTimeoutSeconds, ServerIdentity.getPublicKey(), serverSignature)
+            new ChallengePayload(nonce, GateConfig.INSTANCE.authTimeoutSeconds, ServerIdentity.getPublicKey(), serverSignature)
         ));
     }
 

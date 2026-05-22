@@ -77,7 +77,7 @@ public class ResponseHandler {
             return;
         }
 
-        ServerConfigurationNetworking.send(handler, new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
+        ServerConfigurationNetworking.send(handler, new AwaitingAdminPayload(GateConfig.INSTANCE.authTimeoutSeconds));
         Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", profile.name());
     }
 }
