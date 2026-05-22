@@ -57,7 +57,7 @@ public class Mcgatekeeper implements ModInitializer {
         // Clean up if the player disconnects during configuration
         ServerConfigurationConnectionEvents.DISCONNECT.register((handler, server) -> {
             var uuid = ((ServerConfigurationNetworkHandlerAccessor) handler).mcgatekeeper_getProfile().id();
-            PendingAuthManager.remove(uuid);
+            PendingAuthManager.removeIfHandler(uuid, handler);
         });
 
         // Receive and verify signed responses

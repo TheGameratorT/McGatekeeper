@@ -34,7 +34,10 @@ public class PendingAuthManager {
     public static byte[] register(UUID uuid, String username, ServerConfigurationNetworkHandler handler) {
         byte[] nonce = new byte[32];
         RNG.nextBytes(nonce);
-        pending.put(uuid, new Entry(nonce, System.currentTimeMillis(), username, handler, null));
+        Entry old = pending.put(uuid, new Entry(nonce, System.currentTimeMillis(), username, handler, null));
+        if (old != null) {
+            old.handler().disconnect(Text.literal("Disconnected: new connection from your account"));
+        }
         return nonce;
     }
 
@@ -75,8 +78,8 @@ public class PendingAuthManager {
         }
     }
 
-    public static void remove(UUID uuid) {
-        pending.remove(uuid);
+    public static void removeIfHandler(UUID uuid, ServerConfigurationNetworkHandler handler) {
+        pending.compute(uuid, (k, e) -> (e != null && e.handler() == handler) ? null : e);
     }
 
     public static Set<UUID> getPendingUuids() {

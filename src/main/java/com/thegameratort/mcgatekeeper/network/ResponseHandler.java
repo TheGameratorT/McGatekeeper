@@ -9,6 +9,7 @@ import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.mixin.ServerConfigurationNetworkHandlerAccessor;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.minecraft.text.Text;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,9 +44,14 @@ public class ResponseHandler {
         }
 
         if (authenticated) {
+            context.server().getPlayerManager().disconnectDuplicateLogins(uuid);
             PendingAuthManager.complete(uuid);
             Mcgatekeeper.LOGGER.info("[McGatekeeper] {} authenticated.", profile.name());
         } else {
+            if (context.server().getPlayerManager().getPlayer(uuid) != null) {
+                context.networkHandler().disconnect(Text.literal("An authenticated session for your account is already active"));
+                return;
+            }
             ServerConfigurationNetworking.send(context.networkHandler(), new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
             Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", profile.name());
         }
