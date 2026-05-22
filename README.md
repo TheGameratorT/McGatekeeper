@@ -110,7 +110,17 @@ The config file is created automatically at `config/mcgatekeeper/config.json`:
 | `config/mcgatekeeper/config.json` | Server configuration (see above) |
 | `config/mcgatekeeper/server.key` | The server's own key pair, generated once. **Back this up.** If lost, all client keys become invalid and every player must be re-approved. |
 | `config/mcgatekeeper/players.json` | Approved player keys, indexed by UUID |
-| *(client)* `config/mcgatekeeper/server-keys.json` | Per-server key pairs, stored on each player's computer |
+| *(client)* see below | Per-server key pairs, stored on each player's computer |
+
+Client keys are stored **outside** the Minecraft instance directory so they are never accidentally shared when exporting or copying a modpack. The location depends on your operating system:
+
+| OS | Path |
+|---|---|
+| Linux / Steam Deck / Flatpak | `$XDG_DATA_HOME/mcgatekeeper/<hash>/server-keys.json` (defaults to `~/.local/share/…`) |
+| macOS | `~/Library/Application Support/mcgatekeeper/<hash>/server-keys.json` |
+| Windows | `%APPDATA%\mcgatekeeper\<hash>\server-keys.json` |
+
+`<hash>` is a short identifier derived from the path of your Minecraft instance. If you run multiple instances they each get their own subdirectory and therefore their own independent set of keys.
 
 ---
 
@@ -171,10 +181,10 @@ Authentication occurs entirely during Minecraft's **configuration phase**, befor
 
 ### Key storage
 
-Private keys are stored in plaintext in the Fabric config directory (`config/mcgatekeeper/`). They are **not** encrypted at rest. Operating system file permissions are your only protection for the private key files. Ensure:
+Private keys are stored in plaintext and are **not** encrypted at rest. Operating system file permissions are your only protection. Ensure:
 
 - The server's `config/mcgatekeeper/server.key` is readable only by the server process user.
-- Players' `config/mcgatekeeper/server-keys.json` is on a machine they control.
+- Players' `server-keys.json` (in the OS data directory described above) is on a machine they control and not synced to untrusted locations.
 
 ### What McGatekeeper does NOT protect against
 

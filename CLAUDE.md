@@ -54,7 +54,7 @@ The configuration phase is a natural hold point: Minecraft doesn't advance the p
 ### Key storage
 
 - **Server** (`config/mcgatekeeper/players.json`): maps player UUID → list of `{label, username, publicKey}` entries (raw 32-byte Ed25519 keys, Base64-encoded). Managed via `/gate allow|reset|list`.
-- **Client** (`config/mcgatekeeper/server-keys.json`): maps server public key (Base64) → Ed25519 `{privateKey, publicKey}` pair. Keys are generated automatically on first connection to each server.
+- **Client** (OS data directory, outside the instance folder): maps server public key (Base64) → Ed25519 `{privateKey, publicKey}` pair. Keys are generated automatically on first connection to each server. The file is stored at `$XDG_DATA_HOME/mcgatekeeper/<hash>/server-keys.json` on Linux (Flatpak-compatible), `~/Library/Application Support/mcgatekeeper/<hash>/server-keys.json` on macOS, and `%APPDATA%/mcgatekeeper/<hash>/server-keys.json` on Windows, where `<hash>` is the first 16 hex digits of SHA-256 of the absolute game directory path. This prevents key leakage when sharing or exporting an instance.
 - **Server identity** (`config/mcgatekeeper/server.key`): persisted Ed25519 keypair (JSON). Generated once. The public key identifies the server; the private key signs challenges so the client can detect relay attacks.
 
 ### Configuration

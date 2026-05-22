@@ -11,14 +11,22 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Stores one Ed25519 keypair per server (keyed by server identity UUID).
- * Persisted in &lt;config-dir&gt;/mcgatekeeper/server-keys.json.
+ * Stores one Ed25519 keypair per server (keyed by server public key, base64).
+ * Persisted outside the instance directory so keys are not accidentally shared
+ * when exporting or duplicating a modpack instance:
+ *   Linux/Flatpak : $XDG_DATA_HOME/mcgatekeeper/<gameDirHash>/server-keys.json
+ *   macOS         : ~/Library/Application Support/mcgatekeeper/<gameDirHash>/server-keys.json
+ *   Windows       : %APPDATA%/mcgatekeeper/<gameDirHash>/server-keys.json
+ * The hash is the first 16 hex digits of SHA-256(absoluteGameDir).
  */
 public class ClientKeyStore {
 
@@ -31,7 +39,7 @@ public class ClientKeyStore {
     private Path keysFile;
 
     public void load() {
-        Path dir = FabricLoader.getInstance().getConfigDir().resolve("mcgatekeeper");
+        Path dir = resolveKeysDir();
         keysFile = dir.resolve("server-keys.json");
         if (!Files.exists(keysFile)) return;
         try {
@@ -76,5 +84,41 @@ public class ClientKeyStore {
             Files.createDirectories(keysFile.getParent());
             Files.writeString(keysFile, gson.toJson(keyMap));
         } catch (IOException ignored) {}
+    }
+
+    private static Path resolveKeysDir() {
+        Path gameDir = FabricLoader.getInstance().getGameDir().toAbsolutePath().normalize();
+        String hash = sha256Prefix(gameDir.toString());
+        return resolveDataBase().resolve("mcgatekeeper").resolve(hash);
+    }
+
+    private static Path resolveDataBase() {
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.contains("win")) {
+            String appData = System.getenv("APPDATA");
+            return appData != null
+                ? Path.of(appData)
+                : Path.of(System.getProperty("user.home"), "AppData", "Roaming");
+        }
+        if (os.contains("mac")) {
+            return Path.of(System.getProperty("user.home"), "Library", "Application Support");
+        }
+        // Linux / BSD / other — respect XDG (Flatpak sets XDG_DATA_HOME automatically)
+        String xdg = System.getenv("XDG_DATA_HOME");
+        return (xdg != null && !xdg.isBlank())
+            ? Path.of(xdg)
+            : Path.of(System.getProperty("user.home"), ".local", "share");
+    }
+
+    private static String sha256Prefix(String input) {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                .digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder(16);
+            for (int i = 0; i < 8; i++) sb.append(String.format("%02x", digest[i]));
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e); // SHA-256 is always available
+        }
     }
 }
