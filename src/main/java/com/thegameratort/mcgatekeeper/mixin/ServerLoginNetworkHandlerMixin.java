@@ -18,7 +18,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
     @Inject(method = "tickVerify", at = @At("HEAD"), cancellable = true)
     private void gate_rejectDuplicateLimboLogin(GameProfile profile, CallbackInfo ci) {
         if (PendingAuthManager.isPending(profile.id())) {
-            disconnect(Text.literal("You are already pending authorization on this server."));
+            disconnect(Text.literal("You are already pending authorization on this server"));
             ci.cancel();
         }
     }

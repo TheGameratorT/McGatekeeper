@@ -74,6 +74,7 @@ public class Ed25519Util {
     }
 
     private static PublicKey toJcaPublic(byte[] raw) {
+        if (raw.length != 32) throw new IllegalArgumentException("Ed25519 public key must be 32 bytes, got " + raw.length);
         byte[] encoded = new byte[44];
         System.arraycopy(X509_HEADER, 0, encoded, 0, X509_HEADER.length);
         System.arraycopy(raw, 0, encoded, X509_HEADER.length, 32);
@@ -85,6 +86,7 @@ public class Ed25519Util {
     }
 
     private static PrivateKey toJcaPrivate(byte[] raw) {
+        if (raw.length != 32) throw new IllegalArgumentException("Ed25519 private key must be 32 bytes, got " + raw.length);
         byte[] encoded = new byte[48];
         System.arraycopy(PKCS8_HEADER, 0, encoded, 0, PKCS8_HEADER.length);
         System.arraycopy(raw, 0, encoded, PKCS8_HEADER.length, 32);
