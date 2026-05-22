@@ -4,6 +4,7 @@ import com.thegameratort.mcgatekeeper.client.auth.ClientAuthState;
 import com.thegameratort.mcgatekeeper.client.auth.ClientKeyStore;
 import com.thegameratort.mcgatekeeper.client.network.ClientResponseHandler;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public class McgatekeeperClient implements ClientModInitializer {
@@ -15,7 +16,10 @@ public class McgatekeeperClient implements ClientModInitializer {
 
         ClientResponseHandler.register(keyStore);
 
-        // Clear auth state on disconnect so it doesn't bleed into the next session
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ClientAuthState.clear());
+        // Clear auth state when configuration phase ends (player enters play)
+        ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientAuthState.clear());
+
+        // Clear auth state if the player disconnects during configuration
+        ClientConfigurationConnectionEvents.DISCONNECT.register((handler, client) -> ClientAuthState.clear());
     }
 }

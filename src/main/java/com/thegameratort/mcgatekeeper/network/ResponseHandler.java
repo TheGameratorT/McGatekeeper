@@ -1,13 +1,13 @@
 package com.thegameratort.mcgatekeeper.network;
 
+import com.mojang.authlib.GameProfile;
 import com.thegameratort.mcgatekeeper.Mcgatekeeper;
-import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
+import com.thegameratort.mcgatekeeper.auth.PendingAuthManager;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
-import com.thegameratort.mcgatekeeper.limbo.LimboManager;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.network.ServerPlayerEntity;
+import com.thegameratort.mcgatekeeper.mixin.ServerConfigurationNetworkHandlerAccessor;
+import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,22 +15,20 @@ import java.util.UUID;
 public class ResponseHandler {
 
     public static void register() {
-        ServerPlayNetworking.registerGlobalReceiver(ResponsePayload.ID, ResponseHandler::handle);
+        ServerConfigurationNetworking.registerGlobalReceiver(ResponsePayload.ID, ResponseHandler::handle);
     }
 
-    private static void handle(ResponsePayload payload, ServerPlayNetworking.Context context) {
-        ServerPlayerEntity player = context.player();
-        UUID uuid = player.getUuid();
+    private static void handle(ResponsePayload payload, ServerConfigurationNetworking.Context context) {
+        GameProfile profile = ((ServerConfigurationNetworkHandlerAccessor) context.networkHandler()).mcgatekeeper_getProfile();
+        UUID uuid = profile.id();
 
-        if (!LimboManager.isInLimbo(uuid)) return;
+        if (!PendingAuthManager.isPending(uuid)) return;
 
-        byte[] nonce = ChallengeStore.getChallenge(uuid);
+        byte[] nonce = PendingAuthManager.getNonce(uuid);
         if (nonce == null) return;
 
         String submittedKeyB64 = Ed25519Util.encodeKey(payload.publicKey());
-
-        // Always record the submitted public key so an admin can /gate allow them
-        ChallengeStore.setPendingPublicKey(uuid, submittedKeyB64);
+        PendingAuthManager.setPendingPublicKey(uuid, submittedKeyB64);
 
         List<KeyStore.KeyEntry> storedKeys = Mcgatekeeper.KEY_STORE.getKeys(uuid);
         boolean authenticated = false;
@@ -42,10 +40,11 @@ public class ResponseHandler {
         }
 
         if (authenticated) {
-            LimboManager.release(context.server(), player);
+            PendingAuthManager.complete(uuid);
+            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} authenticated.", profile.name());
         } else {
-            ServerPlayNetworking.send(player, new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
-            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", player.getGameProfile().name());
+            ServerConfigurationNetworking.send(context.networkHandler(), new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
+            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", profile.name());
         }
     }
 }

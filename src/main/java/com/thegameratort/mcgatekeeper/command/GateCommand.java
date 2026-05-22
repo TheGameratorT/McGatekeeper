@@ -7,17 +7,15 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.thegameratort.mcgatekeeper.Mcgatekeeper;
-import com.thegameratort.mcgatekeeper.auth.ChallengeStore;
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
-import com.thegameratort.mcgatekeeper.limbo.LimboManager;
+import com.thegameratort.mcgatekeeper.auth.PendingAuthManager;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.permission.Permission;
 import net.minecraft.command.permission.PermissionLevel;
 import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -36,7 +34,7 @@ public class GateCommand {
                 .requires(source -> source.getPermissions().hasPermission(new Permission.Level(PermissionLevel.ADMINS)))
                 .then(literal("allow")
                     .then(argument("player", StringArgumentType.word())
-                        .suggests(GateCommand::suggestLimboPlayers)
+                        .suggests(GateCommand::suggestPendingPlayers)
                         .then(argument("label", StringArgumentType.word())
                             .executes(GateCommand::executeAllow))))
                 .then(literal("reset")
@@ -56,11 +54,10 @@ public class GateCommand {
     // Suggestion providers
     // -------------------------------------------------------------------------
 
-    private static CompletableFuture<Suggestions> suggestLimboPlayers(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-        for (ServerPlayerEntity p : ctx.getSource().getServer().getPlayerManager().getPlayerList()) {
-            if (LimboManager.isInLimbo(p.getUuid())) {
-                builder.suggest(p.getGameProfile().name());
-            }
+    private static CompletableFuture<Suggestions> suggestPendingPlayers(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
+        for (UUID uuid : PendingAuthManager.getPendingUuids()) {
+            String name = PendingAuthManager.getUsername(uuid);
+            if (name != null) builder.suggest(name);
         }
         return builder.buildFuture();
     }
@@ -84,23 +81,23 @@ public class GateCommand {
         String label = StringArgumentType.getString(ctx, "label");
         ServerCommandSource source = ctx.getSource();
 
-        ServerPlayerEntity target = source.getServer().getPlayerManager().getPlayer(playerName);
-        if (target == null || !LimboManager.isInLimbo(target.getUuid())) {
-            source.sendError(Text.literal(playerName + " is not currently in limbo."));
+        UUID uuid = findPendingByName(playerName);
+        if (uuid == null) {
+            source.sendError(Text.literal(playerName + " is not currently pending authorization."));
             return 0;
         }
 
-        String pendingKey = ChallengeStore.getPendingPublicKey(target.getUuid());
+        String pendingKey = PendingAuthManager.getPendingPublicKey(uuid);
         if (pendingKey == null) {
             source.sendError(Text.literal(playerName + " has not sent a key response yet."));
             return 0;
         }
 
-        Mcgatekeeper.KEY_STORE.addKey(target.getUuid(), target.getGameProfile().name(), label, pendingKey);
+        Mcgatekeeper.KEY_STORE.addKey(uuid, playerName, label, pendingKey);
         Mcgatekeeper.KEY_STORE.save();
 
-        LimboManager.release(source.getServer(), target);
-        source.sendFeedback(() -> Text.literal("Registered key [" + label + "] for " + playerName + " and released from limbo."), true);
+        PendingAuthManager.complete(uuid);
+        source.sendFeedback(() -> Text.literal("Registered key [" + label + "] for " + playerName + " and released."), true);
         return 1;
     }
 
@@ -169,12 +166,21 @@ public class GateCommand {
     // Helpers
     // -------------------------------------------------------------------------
 
+    /** Finds the UUID of a player currently pending authorization by their username. */
+    private static UUID findPendingByName(String playerName) {
+        for (UUID uuid : PendingAuthManager.getPendingUuids()) {
+            if (playerName.equalsIgnoreCase(PendingAuthManager.getUsername(uuid))) {
+                return uuid;
+            }
+        }
+        return null;
+    }
+
+    /** Resolves a UUID for /reset and /list — tries online players then the name→id cache. */
     private static UUID resolveUuid(String playerName, ServerCommandSource source) {
-        // Try online player first
-        ServerPlayerEntity online = source.getServer().getPlayerManager().getPlayer(playerName);
+        var online = source.getServer().getPlayerManager().getPlayer(playerName);
         if (online != null) return online.getUuid();
 
-        // Fall back to name→id cache for offline players
         Optional<PlayerConfigEntry> profile = source.getServer().getApiServices().nameToIdCache().findByName(playerName);
         if (profile.isPresent()) return profile.get().id();
 

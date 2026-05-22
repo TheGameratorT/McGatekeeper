@@ -1,14 +1,14 @@
 package com.thegameratort.mcgatekeeper.mixin.client;
 
 import com.thegameratort.mcgatekeeper.client.auth.ClientAuthState;
-import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
+import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-@Mixin(LevelLoadingScreen.class)
-public class LevelLoadingScreenMixin {
+@Mixin(ConnectScreen.class)
+public class ConnectScreenMixin {
 
     @ModifyArg(
         method = "render",
