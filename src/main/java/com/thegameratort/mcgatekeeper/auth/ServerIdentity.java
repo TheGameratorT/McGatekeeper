@@ -23,9 +23,8 @@ public class ServerIdentity {
                 Mcgatekeeper.LOGGER.info("[McGatekeeper] Generated new server identity: {}", id);
             }
         } catch (IOException e) {
-            // Fall back to a runtime-only UUID so the server still starts
-            id = UUID.randomUUID().toString();
-            Mcgatekeeper.LOGGER.error("[McGatekeeper] Failed to persist server.id — using ephemeral identity", e);
+            Mcgatekeeper.LOGGER.error("[McGatekeeper] Failed to read or write server.id — cannot start safely. Check file permissions under the config directory.", e);
+            throw new RuntimeException("[McGatekeeper] Fatal: could not persist server identity. Server startup aborted.", e);
         }
     }
 
