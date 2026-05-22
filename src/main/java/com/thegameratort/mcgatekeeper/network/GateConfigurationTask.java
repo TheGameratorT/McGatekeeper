@@ -1,6 +1,7 @@
 package com.thegameratort.mcgatekeeper.network;
 
 import com.mojang.authlib.GameProfile;
+import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.auth.PendingAuthManager;
 import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
@@ -26,8 +27,10 @@ public class GateConfigurationTask implements ServerPlayerConfigurationTask {
     public void sendPacket(Consumer<Packet<?>> sender) {
         GameProfile profile = ((ServerConfigurationNetworkHandlerAccessor) handler).mcgatekeeper_getProfile();
         byte[] nonce = PendingAuthManager.register(profile.id(), profile.name(), handler);
+        byte[] message = Ed25519Util.buildSignedMessage(ServerIdentity.getPublicKey(), nonce);
+        byte[] serverSignature = Ed25519Util.sign(message, ServerIdentity.getPrivateKey());
         sender.accept(ServerConfigurationNetworking.createS2CPacket(
-            new ChallengePayload(ServerIdentity.get(), nonce, GateConfig.INSTANCE.limboTimeoutSeconds)
+            new ChallengePayload(nonce, GateConfig.INSTANCE.limboTimeoutSeconds, ServerIdentity.getPublicKey(), serverSignature)
         ));
     }
 

@@ -5,6 +5,7 @@ import com.thegameratort.mcgatekeeper.Mcgatekeeper;
 import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.auth.KeyStore;
 import com.thegameratort.mcgatekeeper.auth.PendingAuthManager;
+import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.mixin.ServerConfigurationNetworkHandlerAccessor;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -31,11 +32,12 @@ public class ResponseHandler {
         String submittedKeyB64 = Ed25519Util.encodeKey(payload.publicKey());
         PendingAuthManager.setPendingPublicKey(uuid, submittedKeyB64);
 
+        byte[] message = Ed25519Util.buildSignedMessage(ServerIdentity.getPublicKey(), nonce);
         List<KeyStore.KeyEntry> storedKeys = Mcgatekeeper.KEY_STORE.getKeys(uuid);
         boolean authenticated = false;
         for (KeyStore.KeyEntry entry : storedKeys) {
             if (entry.publicKey().equals(submittedKeyB64)) {
-                authenticated = Ed25519Util.verify(nonce, payload.signature(), payload.publicKey());
+                authenticated = Ed25519Util.verify(message, payload.signature(), payload.publicKey());
                 if (authenticated) break;
             }
         }

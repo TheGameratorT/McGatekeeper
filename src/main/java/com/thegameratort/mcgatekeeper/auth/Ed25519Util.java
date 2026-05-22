@@ -55,6 +55,13 @@ public class Ed25519Util {
         }
     }
 
+    public static byte[] buildSignedMessage(byte[] serverPublicKey, byte[] nonce) {
+        byte[] message = new byte[serverPublicKey.length + nonce.length];
+        System.arraycopy(serverPublicKey, 0, message, 0, serverPublicKey.length);
+        System.arraycopy(nonce, 0, message, serverPublicKey.length, nonce.length);
+        return message;
+    }
+
     public static String encodeKey(byte[] rawKeyBytes) {
         return Base64.getEncoder().encodeToString(rawKeyBytes);
     }
