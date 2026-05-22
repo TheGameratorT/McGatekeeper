@@ -1,4 +1,5 @@
 {
+  "connect.mcgatekeeper.awaiting_admin": "Yönetici onayı bekleniyor... (%ssn)",
   "disconnect.mcgatekeeper.session_already_active": "Hesabınız için zaten aktif bir kimliği doğrulanmış oturum var",
   "disconnect.mcgatekeeper.new_connection": "Bağlantı kesildi: hesabınızdan yeni bir kimliği doğrulanmış bağlantı",
   "disconnect.mcgatekeeper.not_authorized": "Yetkisiz"

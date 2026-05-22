@@ -20,6 +20,6 @@ public class ConnectScreenMixin {
         if (!ClientAuthState.isAwaitingAdmin()) return original;
         long elapsed = (System.currentTimeMillis() - ClientAuthState.getStartMs()) / 1000L;
         int remaining = Math.max(0, ClientAuthState.getTimeoutSeconds() - (int) elapsed);
-        return Text.literal("Waiting for admin authorization... (" + remaining + "s)");
+        return Text.translatable("connect.mcgatekeeper.awaiting_admin", remaining);
     }
 }

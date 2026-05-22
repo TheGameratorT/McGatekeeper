@@ -1,4 +1,5 @@
 {
+  "connect.mcgatekeeper.awaiting_admin": "En attente d'autorisation de l'administrateur... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Une session authentifiée est déjà active pour votre compte",
   "disconnect.mcgatekeeper.new_connection": "Déconnecté : nouvelle connexion authentifiée depuis votre compte",
   "disconnect.mcgatekeeper.not_authorized": "Non autorisé"

@@ -1,4 +1,5 @@
 {
+  "connect.mcgatekeeper.awaiting_admin": "等待管理員授權...（%s秒）",
   "disconnect.mcgatekeeper.session_already_active": "您的帳戶已有一個活躍的已驗證工作階段",
   "disconnect.mcgatekeeper.new_connection": "已中斷連線：您的帳戶有新的已驗證連線",
   "disconnect.mcgatekeeper.not_authorized": "未授權"

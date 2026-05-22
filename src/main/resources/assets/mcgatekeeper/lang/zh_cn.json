@@ -1,4 +1,5 @@
 {
+  "connect.mcgatekeeper.awaiting_admin": "等待管理员授权...（%s秒）",
   "disconnect.mcgatekeeper.session_already_active": "您的账户已存在活跃的已认证会话",
   "disconnect.mcgatekeeper.new_connection": "已断开连接：您的账户存在新的已认证连接",
   "disconnect.mcgatekeeper.not_authorized": "未授权"
