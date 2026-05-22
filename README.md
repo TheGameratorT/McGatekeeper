@@ -181,7 +181,6 @@ Private keys are stored in plaintext in the Fabric config directory (`config/mcg
 - **Compromised client machine.** If an attacker has access to a player's computer and can read their `server-keys.json`, they can impersonate that player. Revoke the key with `/gate reset <player> <label>` if a device is compromised.
 - **Compromised server files.** The server stores approved public keys in `players.json`. If an attacker can modify this file, they can add their own key. This is a server file-system security concern, not a protocol concern.
 - **Denial of service.** McGatekeeper does not rate-limit connection attempts. A flood of connections will consume server resources during the authentication phase. The `authTimeoutSeconds` timeout limits how long each unauthenticated connection can hold a slot.
-- **UUID collisions or Mojang account takeover.** McGatekeeper trusts the UUID provided during the login phase. On offline-mode servers this UUID is derived from the username and is not validated by Mojang. Protect your server from username-spoofing at the network level (firewall, VPN, etc.).
 
 ---
 
