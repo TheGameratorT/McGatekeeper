@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "À espera de autorização do administrador... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Já existe uma sessão autenticada ativa para a sua conta",
   "disconnect.mcgatekeeper.new_connection": "Desligado: nova ligação autenticada a partir da sua conta",
-  "disconnect.mcgatekeeper.not_authorized": "Não autorizado"
+  "disconnect.mcgatekeeper.not_authorized": "Não autorizado",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Gestão de chaves",
+  "screen.mcgatekeeper.server_keys": "Chaves de servidor conhecidas:",
+  "screen.mcgatekeeper.warning": "Aviso: os ficheiros exportados contêm chaves privadas — guarde-os em segurança.",
+  "screen.mcgatekeeper.export": "Exportar",
+  "screen.mcgatekeeper.import": "Importar",
+  "screen.mcgatekeeper.clear_all": "Limpar tudo",
+  "screen.mcgatekeeper.manage_keys": "Gerir chaves",
+  "screen.mcgatekeeper.status.exported": "%d chave(s) exportada(s) para: %s",
+  "screen.mcgatekeeper.status.imported": "%d chave(s) importada(s), %d existente(s) ignorada(s)",
+  "screen.mcgatekeeper.status.cleared": "Todas as chaves limpas",
+  "screen.mcgatekeeper.status.error": "Erro: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Limpar todas as chaves?",
+  "screen.mcgatekeeper.clear_confirm_body": "Isto elimina todos os pares de chaves guardados. Terá de se reautorizar em cada servidor."
 }

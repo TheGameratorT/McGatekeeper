@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "관리자 승인 대기 중... (%s초)",
   "disconnect.mcgatekeeper.session_already_active": "이 계정의 인증된 세션이 이미 활성화되어 있습니다",
   "disconnect.mcgatekeeper.new_connection": "연결 해제됨: 계정에서 새로운 인증된 연결이 시작되었습니다",
-  "disconnect.mcgatekeeper.not_authorized": "승인되지 않음"
+  "disconnect.mcgatekeeper.not_authorized": "승인되지 않음",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - 키 관리",
+  "screen.mcgatekeeper.server_keys": "알려진 서버 키:",
+  "screen.mcgatekeeper.warning": "경고: 내보낸 파일에는 개인 키가 포함되어 있습니다 — 안전하게 보관하세요.",
+  "screen.mcgatekeeper.export": "내보내기",
+  "screen.mcgatekeeper.import": "가져오기",
+  "screen.mcgatekeeper.clear_all": "모두 지우기",
+  "screen.mcgatekeeper.manage_keys": "키 관리",
+  "screen.mcgatekeeper.status.exported": "%d개의 키를 %s(으)로 내보냈습니다",
+  "screen.mcgatekeeper.status.imported": "%d개의 키를 가져왔습니다, %d개의 기존 키 건너뜀",
+  "screen.mcgatekeeper.status.cleared": "모든 키가 삭제되었습니다",
+  "screen.mcgatekeeper.status.error": "오류: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "모든 키를 삭제하시겠습니까?",
+  "screen.mcgatekeeper.clear_confirm_body": "저장된 모든 키 쌍이 삭제됩니다. 각 서버에서 다시 인증해야 합니다."
 }

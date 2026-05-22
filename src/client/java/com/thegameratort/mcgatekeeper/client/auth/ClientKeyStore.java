@@ -16,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +34,11 @@ public class ClientKeyStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("mcgatekeeper");
 
+    /** One server's client keypair as stored in JSON. */
     private record StoredPair(String privateKey, String publicKey) {}
+
+    /** A displayable entry: server public key (base64) and the corresponding client public key (base64). */
+    public record KeyEntry(String serverKeyB64, String clientPublicKeyB64) {}
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, StoredPair> keyMap = new HashMap<>(); // server public key (base64) → client keypair
@@ -76,6 +82,68 @@ public class ClientKeyStore {
         LOGGER.info("[McGatekeeper] New server key (fingerprint: {}). Generated client keypair.",
             Ed25519Util.fingerprint(serverKeyB64));
         return pair;
+    }
+
+    /** Returns a snapshot of all known server→client key pairs for display. */
+    public List<KeyEntry> getEntries() {
+        List<KeyEntry> list = new ArrayList<>(keyMap.size());
+        for (Map.Entry<String, StoredPair> e : keyMap.entrySet()) {
+            list.add(new KeyEntry(e.getKey(), e.getValue().publicKey()));
+        }
+        return list;
+    }
+
+    /** Removes the entry for the given server public key (base64). Returns true if it existed. */
+    public boolean removeEntry(String serverKeyB64) {
+        if (keyMap.remove(serverKeyB64) != null) {
+            save();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Exports all keypairs to a JSON file at the given path.
+     * The file contains private keys — keep it secure.
+     * @return number of entries written
+     */
+    public int exportTo(Path path) throws IOException {
+        Files.createDirectories(path.getParent());
+        Files.writeString(path, gson.toJson(keyMap));
+        return keyMap.size();
+    }
+
+    /**
+     * Imports keypairs from a JSON file, skipping entries whose server key already exists.
+     * @return int[]{imported, skipped}
+     */
+    public int[] importFrom(Path path) throws IOException {
+        String json = Files.readString(path);
+        Type type = new TypeToken<Map<String, StoredPair>>() {}.getType();
+        Map<String, StoredPair> loaded;
+        try {
+            loaded = gson.fromJson(json, type);
+        } catch (JsonParseException e) {
+            throw new IOException("Invalid key file: " + e.getMessage(), e);
+        }
+        if (loaded == null) return new int[]{0, 0};
+        int imported = 0, skipped = 0;
+        for (Map.Entry<String, StoredPair> entry : loaded.entrySet()) {
+            if (entry.getValue() == null) continue;
+            if (!keyMap.containsKey(entry.getKey())) {
+                keyMap.put(entry.getKey(), entry.getValue());
+                imported++;
+            } else {
+                skipped++;
+            }
+        }
+        if (imported > 0) save();
+        return new int[]{imported, skipped};
+    }
+
+    /** Returns the path to the on-disk keys file, or null if load() has not been called. */
+    public Path getStoragePath() {
+        return keysFile;
     }
 
     private void save() {

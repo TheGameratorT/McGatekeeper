@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "In attesa dell'autorizzazione dell'amministratore... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "È già attiva una sessione autenticata per il tuo account",
   "disconnect.mcgatekeeper.new_connection": "Disconnesso: nuova connessione autenticata dal tuo account",
-  "disconnect.mcgatekeeper.not_authorized": "Non autorizzato"
+  "disconnect.mcgatekeeper.not_authorized": "Non autorizzato",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Gestione chiavi",
+  "screen.mcgatekeeper.server_keys": "Chiavi server conosciute:",
+  "screen.mcgatekeeper.warning": "Attenzione: i file esportati contengono chiavi private — conservali in modo sicuro.",
+  "screen.mcgatekeeper.export": "Esporta",
+  "screen.mcgatekeeper.import": "Importa",
+  "screen.mcgatekeeper.clear_all": "Cancella tutto",
+  "screen.mcgatekeeper.manage_keys": "Gestisci chiavi",
+  "screen.mcgatekeeper.status.exported": "%d chiave/i esportata/e in: %s",
+  "screen.mcgatekeeper.status.imported": "%d chiave/i importata/e, %d esistente/i ignorata/e",
+  "screen.mcgatekeeper.status.cleared": "Tutte le chiavi cancellate",
+  "screen.mcgatekeeper.status.error": "Errore: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Cancellare tutte le chiavi?",
+  "screen.mcgatekeeper.clear_confirm_body": "Questo elimina tutte le coppie di chiavi salvate. Dovrai ri-autorizzarti su ogni server."
 }

@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Ожидание разрешения администратора... (%sс)",
   "disconnect.mcgatekeeper.session_already_active": "Авторизованная сессия для вашего аккаунта уже активна",
   "disconnect.mcgatekeeper.new_connection": "Отключено: новое авторизованное подключение с вашего аккаунта",
-  "disconnect.mcgatekeeper.not_authorized": "Не авторизован"
+  "disconnect.mcgatekeeper.not_authorized": "Не авторизован",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Управление ключами",
+  "screen.mcgatekeeper.server_keys": "Известные ключи серверов:",
+  "screen.mcgatekeeper.warning": "Предупреждение: экспортируемые файлы содержат приватные ключи — храните их в безопасности.",
+  "screen.mcgatekeeper.export": "Экспорт",
+  "screen.mcgatekeeper.import": "Импорт",
+  "screen.mcgatekeeper.clear_all": "Очистить всё",
+  "screen.mcgatekeeper.manage_keys": "Управление ключами",
+  "screen.mcgatekeeper.status.exported": "Экспортировано %d ключей в: %s",
+  "screen.mcgatekeeper.status.imported": "Импортировано %d ключей, пропущено %d существующих",
+  "screen.mcgatekeeper.status.cleared": "Все ключи очищены",
+  "screen.mcgatekeeper.status.error": "Ошибка: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Очистить все ключи?",
+  "screen.mcgatekeeper.clear_confirm_body": "Это удалит все сохранённые пары ключей. Вам потребуется повторно авторизоваться на каждом сервере."
 }

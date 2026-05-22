@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Yönetici onayı bekleniyor... (%ssn)",
   "disconnect.mcgatekeeper.session_already_active": "Hesabınız için zaten aktif bir kimliği doğrulanmış oturum var",
   "disconnect.mcgatekeeper.new_connection": "Bağlantı kesildi: hesabınızdan yeni bir kimliği doğrulanmış bağlantı",
-  "disconnect.mcgatekeeper.not_authorized": "Yetkisiz"
+  "disconnect.mcgatekeeper.not_authorized": "Yetkisiz",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Anahtar Yönetimi",
+  "screen.mcgatekeeper.server_keys": "Bilinen sunucu anahtarları:",
+  "screen.mcgatekeeper.warning": "Uyarı: dışa aktarılan dosyalar özel anahtarlar içerir — bunları güvenli bir şekilde saklayın.",
+  "screen.mcgatekeeper.export": "Dışa aktar",
+  "screen.mcgatekeeper.import": "İçe aktar",
+  "screen.mcgatekeeper.clear_all": "Tümünü temizle",
+  "screen.mcgatekeeper.manage_keys": "Anahtarları yönet",
+  "screen.mcgatekeeper.status.exported": "%d anahtar %s konumuna dışa aktarıldı",
+  "screen.mcgatekeeper.status.imported": "%d anahtar içe aktarıldı, %d mevcut anahtar atlandı",
+  "screen.mcgatekeeper.status.cleared": "Tüm anahtarlar temizlendi",
+  "screen.mcgatekeeper.status.error": "Hata: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Tüm anahtarlar temizlensin mi?",
+  "screen.mcgatekeeper.clear_confirm_body": "Bu, kayıtlı tüm anahtar çiftlerini siler. Her sunucuda yeniden yetkilendirmeniz gerekecek."
 }

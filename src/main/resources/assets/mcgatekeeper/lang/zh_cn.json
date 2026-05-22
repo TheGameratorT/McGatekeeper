@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "等待管理员授权...（%s秒）",
   "disconnect.mcgatekeeper.session_already_active": "您的账户已存在活跃的已认证会话",
   "disconnect.mcgatekeeper.new_connection": "已断开连接：您的账户存在新的已认证连接",
-  "disconnect.mcgatekeeper.not_authorized": "未授权"
+  "disconnect.mcgatekeeper.not_authorized": "未授权",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - 密钥管理",
+  "screen.mcgatekeeper.server_keys": "已知服务器密钥：",
+  "screen.mcgatekeeper.warning": "警告：导出的文件包含私钥——请妥善保管。",
+  "screen.mcgatekeeper.export": "导出",
+  "screen.mcgatekeeper.import": "导入",
+  "screen.mcgatekeeper.clear_all": "清除全部",
+  "screen.mcgatekeeper.manage_keys": "管理密钥",
+  "screen.mcgatekeeper.status.exported": "已将 %d 个密钥导出至：%s",
+  "screen.mcgatekeeper.status.imported": "已导入 %d 个密钥，跳过 %d 个已存在的密钥",
+  "screen.mcgatekeeper.status.cleared": "已清除所有密钥",
+  "screen.mcgatekeeper.status.error": "错误：%s",
+  "screen.mcgatekeeper.clear_confirm_title": "清除所有密钥？",
+  "screen.mcgatekeeper.clear_confirm_body": "这将删除所有已保存的密钥对。您需要在每个服务器上重新进行授权。"
 }

@@ -9,12 +9,14 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public class McgatekeeperClient implements ClientModInitializer {
 
+    public static ClientKeyStore KEY_STORE;
+
     @Override
     public void onInitializeClient() {
-        ClientKeyStore keyStore = new ClientKeyStore();
-        keyStore.load();
+        KEY_STORE = new ClientKeyStore();
+        KEY_STORE.load();
 
-        ClientResponseHandler.register(keyStore);
+        ClientResponseHandler.register(KEY_STORE);
 
         // Clear auth state when configuration phase ends (player enters play)
         ClientPlayConnectionEvents.INIT.register((handler, client) -> ClientAuthState.clear());

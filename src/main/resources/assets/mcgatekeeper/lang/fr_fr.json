@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "En attente d'autorisation de l'administrateur... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Une session authentifiée est déjà active pour votre compte",
   "disconnect.mcgatekeeper.new_connection": "Déconnecté : nouvelle connexion authentifiée depuis votre compte",
-  "disconnect.mcgatekeeper.not_authorized": "Non autorisé"
+  "disconnect.mcgatekeeper.not_authorized": "Non autorisé",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Gestion des clés",
+  "screen.mcgatekeeper.server_keys": "Clés de serveur connues :",
+  "screen.mcgatekeeper.warning": "Avertissement : les fichiers exportés contiennent des clés privées — conservez-les en sécurité.",
+  "screen.mcgatekeeper.export": "Exporter",
+  "screen.mcgatekeeper.import": "Importer",
+  "screen.mcgatekeeper.clear_all": "Tout effacer",
+  "screen.mcgatekeeper.manage_keys": "Gérer les clés",
+  "screen.mcgatekeeper.status.exported": "%d clé(s) exportée(s) vers : %s",
+  "screen.mcgatekeeper.status.imported": "%d clé(s) importée(s), %d existante(s) ignorée(s)",
+  "screen.mcgatekeeper.status.cleared": "Toutes les clés effacées",
+  "screen.mcgatekeeper.status.error": "Erreur : %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Effacer toutes les clés ?",
+  "screen.mcgatekeeper.clear_confirm_body": "Cela supprime toutes les paires de clés enregistrées. Vous devrez vous réautoriser sur chaque serveur."
 }

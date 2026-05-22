@@ -18,6 +18,9 @@
     ],
     "main": [
       "com.thegameratort.mcgatekeeper.Mcgatekeeper"
+    ],
+    "modmenu": [
+      "com.thegameratort.mcgatekeeper.client.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -31,5 +34,8 @@
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "suggests": {
+    "modmenu": ">=17"
   }
 }

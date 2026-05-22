@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Warte auf Administratorgenehmigung... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Eine authentifizierte Sitzung für dein Konto ist bereits aktiv",
   "disconnect.mcgatekeeper.new_connection": "Getrennt: neue authentifizierte Verbindung von deinem Konto",
-  "disconnect.mcgatekeeper.not_authorized": "Nicht autorisiert"
+  "disconnect.mcgatekeeper.not_authorized": "Nicht autorisiert",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Schlüsselverwaltung",
+  "screen.mcgatekeeper.server_keys": "Bekannte Serverschlüssel:",
+  "screen.mcgatekeeper.warning": "Warnung: Exportierte Dateien enthalten private Schlüssel — sicher aufbewahren.",
+  "screen.mcgatekeeper.export": "Exportieren",
+  "screen.mcgatekeeper.import": "Importieren",
+  "screen.mcgatekeeper.clear_all": "Alle löschen",
+  "screen.mcgatekeeper.manage_keys": "Schlüssel verwalten",
+  "screen.mcgatekeeper.status.exported": "%d Schlüssel exportiert nach: %s",
+  "screen.mcgatekeeper.status.imported": "%d Schlüssel importiert, %d bereits vorhandene übersprungen",
+  "screen.mcgatekeeper.status.cleared": "Alle Schlüssel gelöscht",
+  "screen.mcgatekeeper.status.error": "Fehler: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Alle Schlüssel löschen?",
+  "screen.mcgatekeeper.clear_confirm_body": "Dies löscht alle gespeicherten Schlüsselpaare. Du musst dich auf jedem Server neu autorisieren."
 }

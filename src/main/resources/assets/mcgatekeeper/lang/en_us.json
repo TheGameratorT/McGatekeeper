@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Waiting for admin authorization... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "An authenticated session for your account is already active",
   "disconnect.mcgatekeeper.new_connection": "Disconnected: new authenticated connection from your account",
-  "disconnect.mcgatekeeper.not_authorized": "Not authorized"
+  "disconnect.mcgatekeeper.not_authorized": "Not authorized",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Key Management",
+  "screen.mcgatekeeper.server_keys": "Known server keys:",
+  "screen.mcgatekeeper.warning": "Warning: exported files contain private keys — store them securely.",
+  "screen.mcgatekeeper.export": "Export",
+  "screen.mcgatekeeper.import": "Import",
+  "screen.mcgatekeeper.clear_all": "Clear All",
+  "screen.mcgatekeeper.manage_keys": "Manage Keys",
+  "screen.mcgatekeeper.status.exported": "Exported %d key(s) to: %s",
+  "screen.mcgatekeeper.status.imported": "Imported %d key(s), skipped %d existing",
+  "screen.mcgatekeeper.status.cleared": "All keys cleared",
+  "screen.mcgatekeeper.status.error": "Error: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Clear All Keys?",
+  "screen.mcgatekeeper.clear_confirm_body": "This deletes all saved keypairs. You will need to re-authorize on each server."
 }

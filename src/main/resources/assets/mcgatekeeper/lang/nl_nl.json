@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Wachten op goedkeuring van de beheerder... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Er is al een geverifieerde sessie actief voor je account",
   "disconnect.mcgatekeeper.new_connection": "Verbinding verbroken: nieuwe geverifieerde verbinding van je account",
-  "disconnect.mcgatekeeper.not_authorized": "Niet geautoriseerd"
+  "disconnect.mcgatekeeper.not_authorized": "Niet geautoriseerd",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Sleutelbeheer",
+  "screen.mcgatekeeper.server_keys": "Bekende serversleutels:",
+  "screen.mcgatekeeper.warning": "Waarschuwing: geëxporteerde bestanden bevatten privésleutels — bewaar ze veilig.",
+  "screen.mcgatekeeper.export": "Exporteren",
+  "screen.mcgatekeeper.import": "Importeren",
+  "screen.mcgatekeeper.clear_all": "Alles wissen",
+  "screen.mcgatekeeper.manage_keys": "Sleutels beheren",
+  "screen.mcgatekeeper.status.exported": "%d sleutel(s) geëxporteerd naar: %s",
+  "screen.mcgatekeeper.status.imported": "%d sleutel(s) geïmporteerd, %d bestaande overgeslagen",
+  "screen.mcgatekeeper.status.cleared": "Alle sleutels gewist",
+  "screen.mcgatekeeper.status.error": "Fout: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Alle sleutels wissen?",
+  "screen.mcgatekeeper.clear_confirm_body": "Dit verwijdert alle opgeslagen sleutelparen. Je moet je opnieuw autoriseren op elke server."
 }

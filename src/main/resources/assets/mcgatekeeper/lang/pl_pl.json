@@ -2,5 +2,19 @@
   "connect.mcgatekeeper.awaiting_admin": "Oczekiwanie na autoryzację administratora... (%ss)",
   "disconnect.mcgatekeeper.session_already_active": "Uwierzytelniona sesja dla twojego konta jest już aktywna",
   "disconnect.mcgatekeeper.new_connection": "Rozłączono: nowe uwierzytelnione połączenie z twojego konta",
-  "disconnect.mcgatekeeper.not_authorized": "Brak autoryzacji"
+  "disconnect.mcgatekeeper.not_authorized": "Brak autoryzacji",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Zarządzanie kluczami",
+  "screen.mcgatekeeper.server_keys": "Znane klucze serwera:",
+  "screen.mcgatekeeper.warning": "Uwaga: wyeksportowane pliki zawierają klucze prywatne — przechowuj je bezpiecznie.",
+  "screen.mcgatekeeper.export": "Eksportuj",
+  "screen.mcgatekeeper.import": "Importuj",
+  "screen.mcgatekeeper.clear_all": "Wyczyść wszystko",
+  "screen.mcgatekeeper.manage_keys": "Zarządzaj kluczami",
+  "screen.mcgatekeeper.status.exported": "Wyeksportowano %d klucz(y) do: %s",
+  "screen.mcgatekeeper.status.imported": "Zaimportowano %d klucz(y), pominięto %d istniejących",
+  "screen.mcgatekeeper.status.cleared": "Wszystkie klucze wyczyszczone",
+  "screen.mcgatekeeper.status.error": "Błąd: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Wyczyścić wszystkie klucze?",
+  "screen.mcgatekeeper.clear_confirm_body": "To usunie wszystkie zapisane pary kluczy. Będziesz musiał ponownie autoryzować się na każdym serwerze."
 }
