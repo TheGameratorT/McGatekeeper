@@ -23,6 +23,7 @@ public class ResponseHandler {
         UUID uuid = profile.id();
 
         if (!PendingAuthManager.isPending(uuid)) return;
+        if (PendingAuthManager.getPendingPublicKey(uuid) != null) return;
 
         byte[] nonce = PendingAuthManager.getNonce(uuid);
         if (nonce == null) return;
