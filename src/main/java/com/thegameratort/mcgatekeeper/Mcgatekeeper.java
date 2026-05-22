@@ -5,7 +5,6 @@ import com.thegameratort.mcgatekeeper.auth.PendingAuthManager;
 import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.command.GateCommand;
-import com.thegameratort.mcgatekeeper.mixin.ServerConfigurationNetworkHandlerAccessor;
 import com.thegameratort.mcgatekeeper.network.AwaitingAdminPayload;
 import com.thegameratort.mcgatekeeper.network.ChallengePayload;
 import com.thegameratort.mcgatekeeper.network.GateConfigurationTask;
@@ -19,6 +18,7 @@ import net.fabricmc.fabric.api.networking.v1.FabricServerConfigurationNetworkHan
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,10 +55,12 @@ public class Mcgatekeeper implements ModInitializer {
         });
 
         // Clean up if the player disconnects during configuration
-        ServerConfigurationConnectionEvents.DISCONNECT.register((handler, server) -> {
-            var uuid = ((ServerConfigurationNetworkHandlerAccessor) handler).mcgatekeeper_getProfile().id();
-            PendingAuthManager.removeIfHandler(uuid, handler);
-        });
+        ServerConfigurationConnectionEvents.DISCONNECT.register((handler, server) -> PendingAuthManager.remove(handler));
+
+        // Clear the in-transition marker once the authenticated player actually reaches play.
+        // From this point on, PlayerManager#getPlayer takes over as the UUID-occupied check.
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
+            PendingAuthManager.clearInTransition(handler.player.getUuid()));
 
         // Receive and verify signed responses
         ResponseHandler.register();

@@ -1,0 +1,5 @@
+{
+  "disconnect.mcgatekeeper.session_already_active": "Une session authentifiée est déjà active pour votre compte",
+  "disconnect.mcgatekeeper.new_connection": "Déconnecté : nouvelle connexion authentifiée depuis votre compte",
+  "disconnect.mcgatekeeper.not_authorized": "Non autorisé"
+}

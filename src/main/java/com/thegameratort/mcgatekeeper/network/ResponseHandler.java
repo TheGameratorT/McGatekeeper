@@ -9,6 +9,7 @@ import com.thegameratort.mcgatekeeper.auth.ServerIdentity;
 import com.thegameratort.mcgatekeeper.config.GateConfig;
 import com.thegameratort.mcgatekeeper.mixin.ServerConfigurationNetworkHandlerAccessor;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
+import net.minecraft.server.network.ServerConfigurationNetworkHandler;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -21,39 +22,62 @@ public class ResponseHandler {
     }
 
     private static void handle(ResponsePayload payload, ServerConfigurationNetworking.Context context) {
-        GameProfile profile = ((ServerConfigurationNetworkHandlerAccessor) context.networkHandler()).mcgatekeeper_getProfile();
+        ServerConfigurationNetworkHandler handler = context.networkHandler();
+        PendingAuthManager.Entry entry = PendingAuthManager.get(handler);
+        if (entry == null || entry.pendingPublicKey != null) return;
+
+        GameProfile profile = ((ServerConfigurationNetworkHandlerAccessor) handler).mcgatekeeper_getProfile();
         UUID uuid = profile.id();
 
-        if (!PendingAuthManager.isPending(uuid)) return;
-        if (PendingAuthManager.getPendingPublicKey(uuid) != null) return;
-
-        byte[] nonce = PendingAuthManager.getNonce(uuid);
-        if (nonce == null) return;
-
         String submittedKeyB64 = Ed25519Util.encodeKey(payload.publicKey());
-        PendingAuthManager.setPendingPublicKey(uuid, submittedKeyB64);
+        byte[] message = Ed25519Util.buildSignedMessage(ServerIdentity.getPublicKey(), entry.nonce);
 
-        byte[] message = Ed25519Util.buildSignedMessage(ServerIdentity.getPublicKey(), nonce);
-        List<KeyStore.KeyEntry> storedKeys = Mcgatekeeper.KEY_STORE.getKeys(uuid);
         boolean authenticated = false;
-        for (KeyStore.KeyEntry entry : storedKeys) {
-            if (entry.publicKey().equals(submittedKeyB64)) {
-                authenticated = Ed25519Util.verify(message, payload.signature(), payload.publicKey());
-                if (authenticated) break;
+        List<KeyStore.KeyEntry> storedKeys = Mcgatekeeper.KEY_STORE.getKeys(uuid);
+        for (KeyStore.KeyEntry stored : storedKeys) {
+            if (stored.publicKey().equals(submittedKeyB64)
+                && Ed25519Util.verify(message, payload.signature(), payload.publicKey())) {
+                authenticated = true;
+                break;
             }
         }
 
         if (authenticated) {
+            // Lock the UUID before completing: there's a window between pending.remove
+            // (in complete) and the player actually appearing in PlayerManager, and a
+            // sibling unknown-key response arriving in that window must not be parked
+            // on the waiting screen. Cleared on ServerPlayConnectionEvents.JOIN.
+            PendingAuthManager.markInTransition(uuid);
+            // Authorized takeover: kick any other pending session for this UUID
+            // (including a session currently awaiting admin approval — they're already trusted)
+            // and any in-play duplicate session.
+            PendingAuthManager.disconnectOthers(uuid, handler,
+                Text.translatable("disconnect.mcgatekeeper.new_connection"));
             context.server().getPlayerManager().disconnectDuplicateLogins(uuid);
-            PendingAuthManager.complete(uuid);
+            PendingAuthManager.complete(handler);
             Mcgatekeeper.LOGGER.info("[McGatekeeper] {} authenticated.", profile.name());
-        } else {
-            if (context.server().getPlayerManager().getPlayer(uuid) != null) {
-                context.networkHandler().disconnect(Text.literal("An authenticated session for your account is already active"));
-                return;
-            }
-            ServerConfigurationNetworking.send(context.networkHandler(), new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
-            Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", profile.name());
+            return;
         }
+
+        // Reject the new connection if an authenticated session is already in play
+        // or transitioning to play.
+        if (context.server().getPlayerManager().getPlayer(uuid) != null) {
+            handler.disconnect(Text.translatable("disconnect.mcgatekeeper.session_already_active"));
+            return;
+        }
+
+        // Unknown key: try to claim the awaiting-admin slot for this UUID.
+        // Any other in-flight session for the same UUID — whether already awaiting
+        // admin or still mid-handshake — blocks this transition. A concurrent
+        // sibling might authenticate at any moment, so park no one on the waiting
+        // screen needlessly.
+        if (!PendingAuthManager.tryAwaitAdmin(handler, submittedKeyB64)) {
+            handler.disconnect(Text.translatable("disconnect.mcgatekeeper.session_already_active"));
+            Mcgatekeeper.LOGGER.warn("[McGatekeeper] Rejected concurrent unauthorized attempt for {}.", profile.name());
+            return;
+        }
+
+        ServerConfigurationNetworking.send(handler, new AwaitingAdminPayload(GateConfig.INSTANCE.limboTimeoutSeconds));
+        Mcgatekeeper.LOGGER.info("[McGatekeeper] {} connected with an unregistered key; an admin can run /gate allow.", profile.name());
     }
 }

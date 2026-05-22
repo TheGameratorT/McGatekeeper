@@ -1,0 +1,5 @@
+{
+  "disconnect.mcgatekeeper.session_already_active": "Er is al een geverifieerde sessie actief voor je account",
+  "disconnect.mcgatekeeper.new_connection": "Verbinding verbroken: nieuwe geverifieerde verbinding van je account",
+  "disconnect.mcgatekeeper.not_authorized": "Niet geautoriseerd"
+}

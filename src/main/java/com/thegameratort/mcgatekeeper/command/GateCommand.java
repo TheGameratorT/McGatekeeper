@@ -55,9 +55,8 @@ public class GateCommand {
     // -------------------------------------------------------------------------
 
     private static CompletableFuture<Suggestions> suggestPendingPlayers(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
-        for (UUID uuid : PendingAuthManager.getPendingUuids()) {
-            String name = PendingAuthManager.getUsername(uuid);
-            if (name != null) builder.suggest(name);
+        for (PendingAuthManager.Entry e : PendingAuthManager.getAwaitingAdminEntries()) {
+            builder.suggest(e.username);
         }
         return builder.buildFuture();
     }
@@ -81,23 +80,17 @@ public class GateCommand {
         String label = StringArgumentType.getString(ctx, "label");
         ServerCommandSource source = ctx.getSource();
 
-        UUID uuid = findPendingByName(playerName);
-        if (uuid == null) {
-            source.sendError(Text.literal(playerName + " is not currently pending authorization."));
+        PendingAuthManager.Entry entry = PendingAuthManager.findAwaitingAdminByName(playerName);
+        if (entry == null) {
+            source.sendError(Text.literal(playerName + " is not currently awaiting admin approval."));
             return 0;
         }
 
-        String pendingKey = PendingAuthManager.getPendingPublicKey(uuid);
-        if (pendingKey == null) {
-            source.sendError(Text.literal(playerName + " has not sent a key response yet."));
-            return 0;
-        }
-
-        Mcgatekeeper.KEY_STORE.addKey(uuid, playerName, label, pendingKey);
+        Mcgatekeeper.KEY_STORE.addKey(entry.uuid, entry.username, label, entry.pendingPublicKey);
         Mcgatekeeper.KEY_STORE.save();
 
-        PendingAuthManager.complete(uuid);
-        source.sendFeedback(() -> Text.literal("Registered key [" + label + "] for " + playerName + " and released."), true);
+        PendingAuthManager.complete(entry.handler);
+        source.sendFeedback(() -> Text.literal("Registered key [" + label + "] for " + entry.username + " and released."), true);
         return 1;
     }
 
@@ -165,16 +158,6 @@ public class GateCommand {
     // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
-
-    /** Finds the UUID of a player currently pending authorization by their username. */
-    private static UUID findPendingByName(String playerName) {
-        for (UUID uuid : PendingAuthManager.getPendingUuids()) {
-            if (playerName.equalsIgnoreCase(PendingAuthManager.getUsername(uuid))) {
-                return uuid;
-            }
-        }
-        return null;
-    }
 
     /** Resolves a UUID for /reset and /list — tries online players then the name→id cache. */
     private static UUID resolveUuid(String playerName, ServerCommandSource source) {

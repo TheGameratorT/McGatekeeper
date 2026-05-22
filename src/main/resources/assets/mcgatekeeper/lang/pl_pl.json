@@ -1,0 +1,5 @@
+{
+  "disconnect.mcgatekeeper.session_already_active": "Uwierzytelniona sesja dla twojego konta jest już aktywna",
+  "disconnect.mcgatekeeper.new_connection": "Rozłączono: nowe uwierzytelnione połączenie z twojego konta",
+  "disconnect.mcgatekeeper.not_authorized": "Brak autoryzacji"
+}

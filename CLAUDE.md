@@ -1,46 +1,62 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # McGatekeeper
 
-A Fabric mod for Minecraft 1.21.11 that enforces Ed25519 public-key authentication on offline-mode servers. Players are held in a "limbo" state on join and only released into the world once they produce a valid cryptographic signature over a server-issued nonce. Unrecognized keys wait for an admin `/gate allow` before being admitted.
+A Fabric mod for Minecraft 1.21.11 that enforces Ed25519 public-key authentication on offline-mode servers. Players are held in Minecraft's **configuration phase** (before entering the play state) and only released once they produce a valid cryptographic signature over a server-issued nonce. Unrecognized keys wait for an admin `/gate allow` before being admitted.
 
 ## Architecture
 
 ```
 src/
   main/           – server-side (and shared) code
-    auth/         – Ed25519 primitives, nonce/challenge store, server identity
+    auth/         – Ed25519 primitives, PendingAuthManager, KeyStore, ServerIdentity
     command/      – /gate allow|reset|list (operator-only, OP level 3)
     config/       – GateConfig: JSON config file loader/saver
-    limbo/        – LimboManager (in-limbo set), LimboPacketQueue (queued S2C packets)
+    limbo/        – empty; legacy directory from a prior architecture
     mixin/        – server mixins (see Mixins section below)
-    network/      – custom payload types and server-side packet handlers
+    network/      – custom payload types, GateConfigurationTask, ResponseHandler
     Mcgatekeeper.java – ModInitializer: wires everything together
 
   client/         – client-side code (split source set)
     auth/         – ClientKeyStore (per-server Ed25519 keypairs), ClientAuthState
     network/      – ClientResponseHandler: responds to challenges, handles results
-    mixin/client/ – client mixins (loading screen overlay)
+    mixin/client/ – client mixins (connection screen overlay)
     McgatekeeperClient.java – ClientModInitializer
 ```
 
 ### Authentication flow
 
-1. Player connects → `ChallengeHandler.onPlayerJoin` → player added to limbo, `ChallengePayload` sent (contains server identity UUID + 32-byte nonce + timeout).
-2. Client receives challenge → looks up or generates an Ed25519 keypair for this server identity → signs the nonce → sends `ResponsePayload` (public key + signature).
-3. `ResponseHandler` verifies the signature against stored keys for that UUID. On success: limbo released, queued world packets flushed, join message broadcast. On failure (unknown key): `AwaitingAdminPayload` sent, player stays in limbo until `/gate allow`.
-4. Limbo tick (every server tick): players whose challenge has expired (configurable `limboTimeoutSeconds`) are kicked.
+Authentication happens entirely during Minecraft's **configuration phase** — the player never enters the play state until auth succeeds.
 
-### Limbo packet interception
+1. Player enters configuration phase → `ServerConfigurationConnectionEvents.CONFIGURE` fires → `GateConfigurationTask` is added to the handler's task queue. Players without the mod are disconnected immediately.
+2. `GateConfigurationTask.sendPacket` fires → `PendingAuthManager.register` stores a nonce + handler → `ChallengePayload` is sent (server public key + server signature over the nonce + nonce + timeout).
+3. Client receives `ChallengePayload` → verifies server signature (relay-attack protection) → looks up or generates an Ed25519 keypair keyed by the server's public key → signs the message → sends `ResponsePayload` (client public key + signature).
+4. `ResponseHandler` verifies the signature against `KeyStore` entries for that player UUID.
+   - **Success**: `PendingAuthManager.markInTransition(uuid)` is called first (see below), then `disconnectOthers` kicks any sibling pending or awaiting-admin sessions, then `disconnectDuplicateLogins` kicks any in-play duplicate, and finally `PendingAuthManager.complete` calls `completeTask(GateConfigurationTask.KEY)`, releasing the player into the play state.
+   - **Unknown key**: `PendingAuthManager.tryAwaitAdmin` attempts to claim the awaiting-admin slot for this UUID. If another session for the same UUID is already in `pending`, already in `inTransition`, or already awaiting admin, the new connection is rejected immediately — `AwaitingAdminPayload` is only sent when no sibling exists. Admin runs `/gate allow <player> <label>` to register the key and call `complete`.
+5. `PendingAuthManager.tick()` (every server tick via `ServerTickEvents.END_SERVER_TICK`): players whose challenge has expired (`limboTimeoutSeconds`) are disconnected.
+6. If the player disconnects during configuration, `ServerConfigurationConnectionEvents.DISCONNECT` cleans up `PendingAuthManager`.
 
-Two mixins cooperate to freeze a player in limbo without disconnecting them:
+### In-transition state
 
-- **`ServerCommonNetworkHandlerMixin`** – intercepts `sendPacket` on the Netty thread. All S2C packets for limbo players are queued in `LimboPacketQueue` instead of being sent. Keep-alive, disconnect, custom payload, and ping packets pass through so the connection stays alive.
-- **`PacketApplyBatcherEntryMixin`** – intercepts `PacketApplyBatcher$Entry.apply` on the main thread. All C2S game packets for limbo players are dropped. `CustomPayloadC2SPacket` passes through so `ResponsePayload` is received.
+`PendingAuthManager.inTransition` is a `ConcurrentHashMap`-backed set of UUIDs that have been authenticated but have not yet appeared in `PlayerManager`. It closes a race between authentication and play-state entry:
+
+- `markInTransition(uuid)` is called **before** `complete(handler)` removes the entry from `pending` and invokes `completeTask`.
+- Between `pending.remove` and `ServerPlayConnectionEvents.JOIN`, `PlayerManager.getPlayer` returns `null` for the transitioning UUID. Without `inTransition`, a concurrent sibling connection arriving in this window would see no conflicting `pending` entry and no in-play player, and `tryAwaitAdmin` would incorrectly park it on the awaiting-admin screen — even though the authorised user is about to occupy that UUID slot.
+- `tryAwaitAdmin` checks `inTransition.contains(uuid)` and rejects the sibling outright if the UUID is transitioning.
+- `clearInTransition(uuid)` is called by `ServerPlayConnectionEvents.JOIN` once the player is safely in `PlayerManager` and the normal `getPlayer` check takes over.
+
+### Why configuration phase instead of packet interception
+
+The configuration phase is a natural hold point: Minecraft doesn't advance the player to the play state until all configuration tasks call `completeTask`. No custom packet interception is needed. The old architecture used limbo packet queuing with two mixins; that has been removed.
 
 ### Key storage
 
-- **Server** (`config/mcgatekeeper/players.json`): maps player UUID → list of `{label, publicKey}` entries (Base64 Ed25519 public keys). Managed via `/gate allow|reset|list`.
-- **Client** (`config/mcgatekeeper/server-keys.json`): maps server identity UUID → Ed25519 `{privateKey, publicKey}` pair. Keys are generated automatically on first connection to each server.
-- **Server identity** (`config/mcgatekeeper/server.id`): random UUID generated once and persisted. Lets the client maintain a separate keypair per physical server.
+- **Server** (`config/mcgatekeeper/players.json`): maps player UUID → list of `{label, username, publicKey}` entries (raw 32-byte Ed25519 keys, Base64-encoded). Managed via `/gate allow|reset|list`.
+- **Client** (`config/mcgatekeeper/server-keys.json`): maps server public key (Base64) → Ed25519 `{privateKey, publicKey}` pair. Keys are generated automatically on first connection to each server.
+- **Server identity** (`config/mcgatekeeper/server.key`): persisted Ed25519 keypair (JSON). Generated once. The public key identifies the server; the private key signs challenges so the client can detect relay attacks.
 
 ### Configuration
 
@@ -174,19 +190,10 @@ All mixins live under `com.thegameratort.mcgatekeeper.mixin` (server) or `com.th
 
 | Mixin | Target | Purpose |
 |---|---|---|
-| `PlayerManagerMixin` | `PlayerManager` | Tracks the player currently connecting so join messages can be suppressed while in limbo; suppresses join broadcast for limbo players. |
-| `ServerCommonNetworkHandlerMixin` | `ServerCommonNetworkHandler` | Queues all S2C packets for limbo players instead of sending them. |
-| `PacketApplyBatcherEntryMixin` | `PacketApplyBatcher$Entry` | Drops all C2S game packets for limbo players (except `CustomPayloadC2SPacket`). |
-| `MinecraftDedicatedServerMixin` | `MinecraftDedicatedServer` | Redirects the first `isOnlineMode()` call in `setupServer`. When the server is offline and `replaceOfflineModeWarning` is enabled, logs one INFO line via the class's own LOGGER and returns `true`, which makes the `if (!isOnlineMode())` branch skip the four vanilla WARN lines entirely. |
-| `LevelLoadingScreenMixin` *(client)* | `LevelLoadingScreen` | Replaces the loading screen text with a countdown message while the player is awaiting admin authorization. |
-
-### Inner-class mixin targets
-
-`PacketApplyBatcher$Entry` is an inner class. Reference it with the `targets` string form instead of the class literal:
-
-```java
-@Mixin(targets = "net.minecraft.network.PacketApplyBatcher$Entry")
-```
+| `MinecraftDedicatedServerMixin` | `MinecraftDedicatedServer` | Redirects the first `isOnlineMode()` call in `setupServer`. When the server is offline and `replaceOfflineModeWarning` is enabled, logs one INFO line and returns `true`, skipping the four vanilla WARN lines. |
+| `ServerConfigurationNetworkHandlerAccessor` | `ServerConfigurationNetworkHandler` | `@Accessor` to read the `profile` field (a `GameProfile`) from the configuration handler. Used by `GateConfigurationTask` and `ResponseHandler`. |
+| `ServerLoginNetworkHandlerMixin` | `ServerLoginNetworkHandler` | `@Redirect` suppressing `disconnectDuplicateLogins` during `tickVerify`. Vanilla calls it before auth completes; `ResponseHandler` handles the kick once the auth outcome is known. |
+| `ConnectScreenMixin` *(client)* | `ConnectScreen` | `@ModifyArg` on the `render` method: replaces the connection status text with a countdown when `ClientAuthState.isAwaitingAdmin()` is true. |
 
 ### `@Shadow @Final` on records
 

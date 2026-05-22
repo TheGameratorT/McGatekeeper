@@ -1,0 +1,5 @@
+{
+  "disconnect.mcgatekeeper.session_already_active": "このアカウントの認証済みセッションはすでにアクティブです",
+  "disconnect.mcgatekeeper.new_connection": "切断されました：あなたのアカウントから新しい認証済み接続がありました",
+  "disconnect.mcgatekeeper.not_authorized": "認証されていません"
+}
