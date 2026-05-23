@@ -1,0 +1,20 @@
+{
+  "connect.mcgatekeeper.awaiting_admin": "Biding for the dright's leave... (%ss)",
+  "disconnect.mcgatekeeper.session_already_active": "A sickered besitting for your reckoning is already working",
+  "disconnect.mcgatekeeper.new_connection": "Unbound: new sickered binding from your reckoning",
+  "disconnect.mcgatekeeper.not_authorized": "Not leaved",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Key Dighting",
+  "screen.mcgatekeeper.server_keys": "Known webthew keys:",
+  "screen.mcgatekeeper.warning": "Warnword: outbrought files hold dern keys — keep them fast.",
+  "screen.mcgatekeeper.export": "Outbring",
+  "screen.mcgatekeeper.import": "Inbring",
+  "screen.mcgatekeeper.clear_all": "Empty All",
+  "screen.mcgatekeeper.manage_keys": "Dight Keys",
+  "screen.mcgatekeeper.status.exported": "Outbrought %d key(s) to: %s",
+  "screen.mcgatekeeper.status.imported": "Inbrought %d key(s), forwent %d standing",
+  "screen.mcgatekeeper.status.cleared": "All keys emptied",
+  "screen.mcgatekeeper.status.error": "Dwale: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Empty All Keys?",
+  "screen.mcgatekeeper.clear_confirm_body": "This adwashes all kept key-twains. You will need to seek leave anew on each webthew."
+}

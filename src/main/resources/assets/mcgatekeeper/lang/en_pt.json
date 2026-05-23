@@ -1,0 +1,20 @@
+{
+  "connect.mcgatekeeper.awaiting_admin": "Waitin' fer th' cap'n's say-so... (%ss)",
+  "disconnect.mcgatekeeper.session_already_active": "Arr, a plunderin' session fer yer account be already sailin'",
+  "disconnect.mcgatekeeper.new_connection": "Walk th' plank: new plunderin' connection from yer account",
+  "disconnect.mcgatekeeper.not_authorized": "Ye be not authorized, scallywag",
+
+  "screen.mcgatekeeper.title": "McGatekeeper - Key Plunder",
+  "screen.mcgatekeeper.server_keys": "Known island keys:",
+  "screen.mcgatekeeper.warning": "Beware: exported chests contain private keys — guard 'em wi' yer life.",
+  "screen.mcgatekeeper.export": "Plunder",
+  "screen.mcgatekeeper.import": "Smuggle",
+  "screen.mcgatekeeper.clear_all": "Toss Overboard",
+  "screen.mcgatekeeper.manage_keys": "Manage Keys",
+  "screen.mcgatekeeper.status.exported": "Plundered %d key(s) t': %s",
+  "screen.mcgatekeeper.status.imported": "Smuggled %d key(s), ignored %d existin'",
+  "screen.mcgatekeeper.status.cleared": "All keys sent t' Davy Jones",
+  "screen.mcgatekeeper.status.error": "Arr! Error: %s",
+  "screen.mcgatekeeper.clear_confirm_title": "Toss All Keys Overboard?",
+  "screen.mcgatekeeper.clear_confirm_body": "This sends all saved keys t' Davy Jones. Ye'll need t' re-authorize on each island."
+}

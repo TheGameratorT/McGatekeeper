@@ -70,6 +70,53 @@ The configuration phase is a natural hold point: Minecraft doesn't advance the p
 
 `replaceOfflineModeWarning`: when `true`, the four vanilla offline-mode WARN lines are suppressed and replaced with a single `[mcgatekeeper] INFO: Protected by McGatekeeper!` message.
 
+## Translations
+
+Language files live in `src/main/resources/assets/mcgatekeeper/lang/`. Most are hand-written. The exception is `en_ud.json` (upside-down English), which is **generated** from `en_us.json` — do not edit it directly.
+
+After adding or changing strings in `en_us.json`, regenerate it from the repo root:
+
+```sh
+python3 tools/generate_en_ud.py
+```
+
+The script (`tools/generate_en_ud.py`) applies Minecraft's character-flip algorithm (reversing each string and mapping each character to its upside-down Unicode equivalent) and writes `en_ud.json` in place. It prints a self-check against three known Minecraft `en_ud` values before writing.
+
+### Adding or updating Pirate (en_pt), Shakespearean (enws), and Anglish (enp)
+
+These are hand-written, using Minecraft's own translations for those languages as style and vocabulary reference, supplemented by the Anglish dictionary for `enp`.
+
+**Locating Minecraft's language files** (PrismLauncher / Flatpak on this machine):
+
+```
+~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/assets/
+  indexes/   – one JSON per asset index version (e.g. 17.json for 1.21.x)
+  objects/   – actual files, keyed by SHA-1 hash (first two hex chars = subdirectory)
+```
+
+To extract a language file, look up its hash in the index and read from `objects/`:
+
+```sh
+ASSETS=~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/assets
+INDEX=$ASSETS/indexes/17.json
+
+# Find the hash for a language (e.g. en_pt, enws, enp, en_ud)
+python3 -c "import json; d=json.load(open('$INDEX')); print(d['objects']['minecraft/lang/en_pt.json']['hash'])"
+
+# Then read the file (replace <hash> with the result above)
+HASH=<hash>
+cat $ASSETS/objects/${HASH:0:2}/$HASH | python3 -m json.tool | less
+```
+
+Minecraft's language codes for these variants: `en_pt` (Pirate), `enws` (Shakespearean), `enp` (Anglish), `en_ud` (upside-down).
+
+**Vocabulary references for Anglish (`enp`):**
+- https://anglish.org/wiki/Anglish — overview and principles
+- https://anglish.org/wiki/Helpful_Anglish_Words — common word pairs
+- https://wordbook.anglish.org/ — searchable dictionary
+
+Use Minecraft's `enp.json` as the primary style reference (it has established terms for gaming concepts: *webthew* = server, *besitting* = session, *reckoning* = account, *dright* = admin, *dwale* = error, *leaved* = allowed, *shirm* = screen). The wordbook fills gaps for mod-specific vocabulary.
+
 ## Build
 
 Requires Java 21. The system default may be Java 17; always pass `JAVA_HOME` explicitly:

@@ -1,0 +1,19 @@
+{
+  "connect.mcgatekeeper.awaiting_admin": "(ss%) ˙˙˙uoᴉʇɐzᴉɹoɥʇnɐ uᴉɯpɐ ɹoɟ ƃuᴉʇᴉɐM",
+  "disconnect.mcgatekeeper.session_already_active": "ǝʌᴉʇɔɐ ʎpɐǝɹꞁɐ sᴉ ʇunoɔɔɐ ɹnoʎ ɹoɟ uoᴉssǝs pǝʇɐɔᴉʇuǝɥʇnɐ u∀",
+  "disconnect.mcgatekeeper.new_connection": "ʇunoɔɔɐ ɹnoʎ ɯoɹɟ uoᴉʇɔǝuuoɔ pǝʇɐɔᴉʇuǝɥʇnɐ ʍǝu :pǝʇɔǝuuoɔsᴉᗡ",
+  "disconnect.mcgatekeeper.not_authorized": "pǝzᴉɹoɥʇnɐ ʇoN",
+  "screen.mcgatekeeper.title": "ʇuǝɯǝƃɐuɐW ʎǝʞ - ɹǝdǝǝʞǝʇɐ⅁ɔW",
+  "screen.mcgatekeeper.server_keys": ":sʎǝʞ ɹǝʌɹǝs uʍouʞ",
+  "screen.mcgatekeeper.warning": "˙ʎꞁǝɹnɔǝs ɯǝɥʇ ǝɹoʇs — sʎǝʞ ǝʇɐʌᴉɹd uᴉɐʇuoɔ sǝꞁᴉɟ pǝʇɹodxǝ :ƃuᴉuɹɐM",
+  "screen.mcgatekeeper.export": "ʇɹodxƎ",
+  "screen.mcgatekeeper.import": "ʇɹodɯI",
+  "screen.mcgatekeeper.clear_all": "ꞁꞁ∀ ɹɐǝꞁƆ",
+  "screen.mcgatekeeper.manage_keys": "sʎǝʞ ǝƃɐuɐW",
+  "screen.mcgatekeeper.status.exported": "s% :oʇ (s)ʎǝʞ p% pǝʇɹodxƎ",
+  "screen.mcgatekeeper.status.imported": "ƃuᴉʇsᴉxǝ p% pǝddᴉʞs '(s)ʎǝʞ p% pǝʇɹodɯI",
+  "screen.mcgatekeeper.status.cleared": "pǝɹɐǝꞁɔ sʎǝʞ ꞁꞁ∀",
+  "screen.mcgatekeeper.status.error": "s% :ɹoɹɹƎ",
+  "screen.mcgatekeeper.clear_confirm_title": "¿sʎǝʞ ꞁꞁ∀ ɹɐǝꞁƆ",
+  "screen.mcgatekeeper.clear_confirm_body": "˙ɹǝʌɹǝs ɥɔɐǝ uo ǝzᴉɹoɥʇnɐ-ǝɹ oʇ pǝǝu ꞁꞁᴉʍ noʎ ˙sɹᴉɐdʎǝʞ pǝʌɐs ꞁꞁɐ sǝʇǝꞁǝp sᴉɥ⊥"
+}
