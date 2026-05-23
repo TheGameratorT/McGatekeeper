@@ -2,7 +2,7 @@
 
 <img src="icon-512.jpg" alt="McGatekeeper icon" width="128" align="right" />
 
-A Fabric mod for Minecraft 1.21.x that replaces username/password login with **cryptographic key authentication**. Instead of a shared password, every player holds a unique digital key that the server recognises. No password can be guessed or stolen — only players with the right key can connect.
+A Fabric mod for Minecraft that replaces username/password login with **cryptographic key authentication**. Instead of a shared password, every player holds a unique digital key that the server recognises. No password can be guessed or stolen — only players with the right key can connect.
 
 Designed for offline-mode servers where the operator personally knows every player.
 
@@ -22,7 +22,7 @@ No passwords. No shared secrets. Nothing to forget or leak.
 
 ## Requirements
 
-- **Minecraft 1.21.x** with the [Fabric](https://fabricmc.net/) mod loader
+- **Minecraft** with the [Fabric](https://fabricmc.net/) mod loader
 - **Fabric API** (required dependency)
 - Both the **server** and **every client** must have the mod installed
 
@@ -33,7 +33,7 @@ No passwords. No shared secrets. Nothing to forget or leak.
 ### Server
 
 1. Install [Fabric](https://fabricmc.net/use/server/) and [Fabric API](https://modrinth.com/mod/fabric-api) on your server.
-2. Drop `McGatekeeper-<version>.jar` into the server's `mods/` folder.
+2. Drop `gatekeeper-<version>.jar` into the server's `mods/` folder.
 3. Set `online-mode=false` in `server.properties`. McGatekeeper replaces Mojang's online-mode authentication with its own.
 4. Start the server. A `config/mcgatekeeper/` directory is created automatically with default settings.
 
@@ -42,7 +42,7 @@ No passwords. No shared secrets. Nothing to forget or leak.
 ### Client
 
 1. Install [Fabric](https://fabricmc.net/use/installer/) and [Fabric API](https://modrinth.com/mod/fabric-api) on your Minecraft instance.
-2. Drop `McGatekeeper-<version>.jar` into your `mods/` folder.
+2. Drop `gatekeeper-<version>.jar` into your `mods/` folder.
 3. That's it. Keys are generated and managed automatically.
 
 You can view and manage your stored keys from the Mods screen (via Mod Menu) → McGatekeeper → Manage Keys. Each entry shows the server address the key was last used with, alongside short fingerprints for the server and client keys. You can delete individual keys or export/import the full set.
