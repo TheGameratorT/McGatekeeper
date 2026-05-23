@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "清除所有金鑰？",
   "screen.mcgatekeeper.clear_confirm_body": "這將刪除所有已儲存的金鑰對。您需要在每個伺服器上重新進行授權。",
   "screen.mcgatekeeper.delete_confirm_title": "刪除金鑰？",
-  "screen.mcgatekeeper.delete_confirm_body": "這將刪除 %s 的已儲存金鑰對。在管理員重新授權之前，您將無法加入該伺服器。"
+  "screen.mcgatekeeper.delete_confirm_body": "這將刪除 %s 的已儲存金鑰對。在管理員重新授權之前，您將無法加入該伺服器。",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "將使用者名稱/密碼登入替換為密碼金鑰認證。每位玩家持有伺服器識別的唯一數位金鑰——無需猜測或竊取密碼。\n\n專為運營者親自了解每位玩家的離線模式伺服器而設計。"
 }

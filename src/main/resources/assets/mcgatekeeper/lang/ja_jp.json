@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "すべての鍵を削除しますか？",
   "screen.mcgatekeeper.clear_confirm_body": "保存されたすべてのキーペアが削除されます。各サーバーで再度認証が必要になります。",
   "screen.mcgatekeeper.delete_confirm_title": "鍵を削除しますか？",
-  "screen.mcgatekeeper.delete_confirm_body": "%s の保存されたキーペアを削除します。管理者が再承認するまで、そのサーバーには参加できません。"
+  "screen.mcgatekeeper.delete_confirm_body": "%s の保存されたキーペアを削除します。管理者が再承認するまで、そのサーバーには参加できません。",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "ユーザー名/パスワードによるログインを暗号鍵認証に置き換えます。各プレイヤーはサーバーが認識する固有のデジタル鍵を持ちます — 推測や盗難の心配があるパスワードは不要です。\n\nオペレーターがすべてのプレイヤーを個人的に知っているオフラインモードのサーバー向けに設計されています。"
 }

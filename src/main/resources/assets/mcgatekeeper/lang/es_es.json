@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "¿Borrar todas las claves?",
   "screen.mcgatekeeper.clear_confirm_body": "Esto elimina todos los pares de claves guardados. Tendrás que volver a autorizarte en cada servidor.",
   "screen.mcgatekeeper.delete_confirm_title": "¿Eliminar clave?",
-  "screen.mcgatekeeper.delete_confirm_body": "Esto elimina el par de claves guardado para %s. No podrás unirte a ese servidor hasta que un administrador te vuelva a autorizar."
+  "screen.mcgatekeeper.delete_confirm_body": "Esto elimina el par de claves guardado para %s. No podrás unirte a ese servidor hasta que un administrador te vuelva a autorizar.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Reemplaza el inicio de sesión con usuario/contraseña por autenticación mediante clave criptográfica. Cada jugador posee una clave digital única que el servidor reconoce — sin contraseña que adivinar o robar.\n\nDiseñado para servidores en modo offline donde el operador conoce personalmente a cada jugador."
 }

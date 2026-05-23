@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Clear All Keys?",
   "screen.mcgatekeeper.clear_confirm_body": "This doth remove all saved keypairs. Thou wilt need to re-authorise on each server.",
   "screen.mcgatekeeper.delete_confirm_title": "Remove This Key?",
-  "screen.mcgatekeeper.delete_confirm_body": "This doth remove the saved keypair for %s. Thou wilt not be able to enter that server until an admin doth grant thee leave once more."
+  "screen.mcgatekeeper.delete_confirm_body": "This doth remove the saved keypair for %s. Thou wilt not be able to enter that server until an admin doth grant thee leave once more.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Replac'd is the signing with name and watchword, in favour of secret-key proof. Each player doth hold their own key the theatre doth know — no watchword to guess or pilfer.\n\nCrafted for offline theatres where the keeper doth know each player by name."
 }

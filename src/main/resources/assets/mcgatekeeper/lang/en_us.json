@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Clear All Keys?",
   "screen.mcgatekeeper.clear_confirm_body": "This deletes all saved keypairs. You will need to re-authorize on each server.",
   "screen.mcgatekeeper.delete_confirm_title": "Delete Key?",
-  "screen.mcgatekeeper.delete_confirm_body": "This removes the saved keypair for %s. You will not be able to join that server until an admin re-authorizes you."
+  "screen.mcgatekeeper.delete_confirm_body": "This removes the saved keypair for %s. You will not be able to join that server until an admin re-authorizes you.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Replaces username/password login with cryptographic key authentication. Every player holds a unique digital key the server recognises — no password to guess or steal.\n\nDesigned for offline-mode servers where the operator personally knows every player."
 }

@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Alle Schlüssel löschen?",
   "screen.mcgatekeeper.clear_confirm_body": "Dies löscht alle gespeicherten Schlüsselpaare. Du musst dich auf jedem Server neu autorisieren.",
   "screen.mcgatekeeper.delete_confirm_title": "Schlüssel löschen?",
-  "screen.mcgatekeeper.delete_confirm_body": "Dies entfernt das gespeicherte Schlüsselpaar für %s. Du kannst diesem Server erst wieder beitreten, wenn dich ein Administrator erneut autorisiert."
+  "screen.mcgatekeeper.delete_confirm_body": "Dies entfernt das gespeicherte Schlüsselpaar für %s. Du kannst diesem Server erst wieder beitreten, wenn dich ein Administrator erneut autorisiert.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Ersetzt die Anmeldung mit Benutzername/Passwort durch kryptografische Schlüsselauthentifizierung. Jeder Spieler besitzt einen einzigartigen digitalen Schlüssel, den der Server erkennt — kein Passwort, das erraten oder gestohlen werden kann.\n\nKonzipiert für Offline-Server, auf denen der Betreiber jeden Spieler persönlich kennt."
 }

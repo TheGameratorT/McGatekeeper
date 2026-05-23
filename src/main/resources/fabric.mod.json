@@ -2,9 +2,11 @@
   "schemaVersion": 1,
   "id": "mcgatekeeper",
   "version": "${version}",
-  "name": "McGatekeeper",
-  "description": "",
-  "authors": [],
+  "name": "Gatekeeper",
+  "description": "Replaces username/password login with cryptographic key authentication. Every player holds a unique digital key the server recognises — no password to guess or steal.",
+  "authors": [
+    "TheGameratorT"
+  ],
   "contact": {},
   "license": "LGPL-3.0",
   "icon": "assets/mcgatekeeper/icon.png",

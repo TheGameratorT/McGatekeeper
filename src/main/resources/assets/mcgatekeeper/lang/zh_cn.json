@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "清除所有密钥？",
   "screen.mcgatekeeper.clear_confirm_body": "这将删除所有已保存的密钥对。您需要在每个服务器上重新进行授权。",
   "screen.mcgatekeeper.delete_confirm_title": "删除密钥？",
-  "screen.mcgatekeeper.delete_confirm_body": "这将删除 %s 的已保存密钥对。在管理员重新授权之前，您将无法加入该服务器。"
+  "screen.mcgatekeeper.delete_confirm_body": "这将删除 %s 的已保存密钥对。在管理员重新授权之前，您将无法加入该服务器。",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "将用户名/密码登录替换为密码密钥认证。每位玩家持有服务器识别的唯一数字密钥——无需猜测或窃取密码。\n\n专为运营者亲自了解每位玩家的离线模式服务器而设计。"
 }

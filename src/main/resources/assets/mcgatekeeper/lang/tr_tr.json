@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Tüm anahtarlar temizlensin mi?",
   "screen.mcgatekeeper.clear_confirm_body": "Bu, kayıtlı tüm anahtar çiftlerini siler. Her sunucuda yeniden yetkilendirmeniz gerekecek.",
   "screen.mcgatekeeper.delete_confirm_title": "Anahtar silinsin mi?",
-  "screen.mcgatekeeper.delete_confirm_body": "Bu, %s için kaydedilen anahtar çiftini kaldırır. Bir yönetici sizi yeniden yetkilendirene kadar o sunucuya katılamazsınız."
+  "screen.mcgatekeeper.delete_confirm_body": "Bu, %s için kaydedilen anahtar çiftini kaldırır. Bir yönetici sizi yeniden yetkilendirene kadar o sunucuya katılamazsınız.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Kullanıcı adı/şifre ile girişi kriptografik anahtar kimlik doğrulamasıyla değiştirir. Her oyuncu, sunucunun tanıdığı benzersiz bir dijital anahtara sahiptir — tahmin edilecek veya çalınacak şifre yoktur.\n\nOperatörün her oyuncuyu kişisel olarak tanıdığı çevrimdışı mod sunucuları için tasarlanmıştır."
 }

@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Effacer toutes les clés ?",
   "screen.mcgatekeeper.clear_confirm_body": "Cela supprime toutes les paires de clés enregistrées. Vous devrez vous réautoriser sur chaque serveur.",
   "screen.mcgatekeeper.delete_confirm_title": "Supprimer la clé ?",
-  "screen.mcgatekeeper.delete_confirm_body": "Cela supprime la paire de clés enregistrée pour %s. Vous ne pourrez pas rejoindre ce serveur tant qu'un administrateur ne vous aura pas réautorisé."
+  "screen.mcgatekeeper.delete_confirm_body": "Cela supprime la paire de clés enregistrée pour %s. Vous ne pourrez pas rejoindre ce serveur tant qu'un administrateur ne vous aura pas réautorisé.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Remplace la connexion par nom d'utilisateur/mot de passe par une authentification par clé cryptographique. Chaque joueur possède une clé numérique unique reconnue par le serveur — aucun mot de passe à deviner ou voler.\n\nConçu pour les serveurs en mode hors ligne où l'opérateur connaît personnellement chaque joueur."
 }

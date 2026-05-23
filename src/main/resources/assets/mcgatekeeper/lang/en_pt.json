@@ -18,5 +18,7 @@
   "screen.mcgatekeeper.clear_confirm_title": "Toss All Keys Overboard?",
   "screen.mcgatekeeper.clear_confirm_body": "This sends all saved keys t' Davy Jones. Ye'll need t' re-authorize on each island.",
   "screen.mcgatekeeper.delete_confirm_title": "Scuttle This Key?",
-  "screen.mcgatekeeper.delete_confirm_body": "This sinks th' saved key fer %s. Ye won't be able t' board that island 'til th' cap'n allows ye back."
+  "screen.mcgatekeeper.delete_confirm_body": "This sinks th' saved key fer %s. Ye won't be able t' board that island 'til th' cap'n allows ye back.",
+
+  "modmenu.descriptionTranslation.mcgatekeeper": "Swaps signin with yer name 'n watchword fer secret key proof. Every seafarer holds their own special key th' island knows — no watchword t' guess or pinch.\n\nCrafted fer offline islands where th' cap'n knows every sailor by name."
 }
