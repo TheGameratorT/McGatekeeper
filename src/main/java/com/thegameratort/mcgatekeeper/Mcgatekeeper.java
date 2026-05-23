@@ -45,6 +45,7 @@ public class Mcgatekeeper implements ModInitializer {
 
         // Add the auth task when a player enters the configuration phase
         ServerConfigurationConnectionEvents.CONFIGURE.register((handler, server) -> {
+            if (!server.isDedicated()) return;
             if (!ServerConfigurationNetworking.canSend(handler, ChallengePayload.ID)) {
                 handler.disconnect(net.minecraft.text.Text.literal(
                     "Access to this server is restricted.\nInstall the McGatekeeper mod to connect."
