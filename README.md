@@ -8,6 +8,12 @@ Designed for offline-mode servers where the operator personally knows every play
 
 ---
 
+## Gallery
+
+See [gallery/GALLERY.md](gallery/GALLERY.md) for screenshots.
+
+---
+
 ## How it works (simple version)
 
 Think of it like a physical lock and key:
