@@ -71,4 +71,4 @@ You can view and manage your stored keys via **Mods → Gatekeeper → Manage Ke
 
 ---
 
-For full technical documentation, the security model, and source code, see the [GitHub repository](https://github.com/TheGameratorT/McTitleFixer).
+For full technical documentation, the security model, and source code, see the [GitHub repository](https://github.com/TheGameratorT/McGatekeeper).
