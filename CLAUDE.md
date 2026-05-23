@@ -84,38 +84,7 @@ The script (`tools/generate_en_ud.py`) applies Minecraft's character-flip algori
 
 ### Adding or updating Pirate (en_pt), Shakespearean (enws), and Anglish (enp)
 
-These are hand-written, using Minecraft's own translations for those languages as style and vocabulary reference, supplemented by the Anglish dictionary for `enp`.
-
-**Locating Minecraft's language files** (PrismLauncher / Flatpak on this machine):
-
-```
-~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/assets/
-  indexes/   – one JSON per asset index version (e.g. 17.json for 1.21.x)
-  objects/   – actual files, keyed by SHA-1 hash (first two hex chars = subdirectory)
-```
-
-To extract a language file, look up its hash in the index and read from `objects/`:
-
-```sh
-ASSETS=~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/assets
-INDEX=$ASSETS/indexes/17.json
-
-# Find the hash for a language (e.g. en_pt, enws, enp, en_ud)
-python3 -c "import json; d=json.load(open('$INDEX')); print(d['objects']['minecraft/lang/en_pt.json']['hash'])"
-
-# Then read the file (replace <hash> with the result above)
-HASH=<hash>
-cat $ASSETS/objects/${HASH:0:2}/$HASH | python3 -m json.tool | less
-```
-
-Minecraft's language codes for these variants: `en_pt` (Pirate), `enws` (Shakespearean), `enp` (Anglish), `en_ud` (upside-down).
-
-**Vocabulary references for Anglish (`enp`):**
-- https://anglish.org/wiki/Anglish — overview and principles
-- https://anglish.org/wiki/Helpful_Anglish_Words — common word pairs
-- https://wordbook.anglish.org/ — searchable dictionary
-
-Use Minecraft's `enp.json` as the primary style reference (it has established terms for gaming concepts: *webthew* = server, *besitting* = session, *reckoning* = account, *dright* = admin, *dwale* = error, *leaved* = allowed, *shirm* = screen). The wordbook fills gaps for mod-specific vocabulary.
+These are hand-written. Use the add-lang skill for the full workflow (vanilla lang file lookup, Anglish vocabulary reference).
 
 ## Build
 
@@ -148,21 +117,7 @@ All class and method names use Yarn's human-readable names (e.g. `MinecraftDedic
 
 ### Generating game_decomp
 
-If the directory is missing, generate it with:
-
-```sh
-JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew genSources
-
-ROOT=$(pwd)
-COMMON_SRC=$(find .gradle/loom-cache/minecraftMaven/net/minecraft -name "minecraft-common-*-sources.jar" | head -1)
-CLIENT_SRC=$(find .gradle/loom-cache/minecraftMaven/net/minecraft -name "minecraft-clientOnly-*-sources.jar" | head -1)
-
-mkdir -p game_decomp/common game_decomp/client
-(cd game_decomp/common && jar xf "$ROOT/$COMMON_SRC")
-(cd game_decomp/client && jar xf "$ROOT/$CLIENT_SRC")
-```
-
-`genSources` takes a few minutes the first time (Vineflower decompiles the full game). The sources JARs land in `.gradle/loom-cache/minecraftMaven/net/minecraft/` with a project-specific hash in the name; the `find` command handles that automatically.
+If the directory is missing, generate it using the gen-decomp skill.
 
 ### Intermediary names
 
