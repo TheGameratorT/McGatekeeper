@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Wszystkie klucze wyczyszczone",
   "screen.mcgatekeeper.status.error": "Błąd: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Wyczyścić wszystkie klucze?",
-  "screen.mcgatekeeper.clear_confirm_body": "To usunie wszystkie zapisane pary kluczy. Będziesz musiał ponownie autoryzować się na każdym serwerze."
+  "screen.mcgatekeeper.clear_confirm_body": "To usunie wszystkie zapisane pary kluczy. Będziesz musiał ponownie autoryzować się na każdym serwerze.",
+  "screen.mcgatekeeper.delete_confirm_title": "Usunąć klucz?",
+  "screen.mcgatekeeper.delete_confirm_body": "To usuwa zapisaną parę kluczy dla %s. Nie będziesz mógł dołączyć do tego serwera, dopóki administrator cię ponownie nie autoryzuje."
 }

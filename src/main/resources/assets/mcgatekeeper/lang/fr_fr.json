@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Toutes les clés effacées",
   "screen.mcgatekeeper.status.error": "Erreur : %s",
   "screen.mcgatekeeper.clear_confirm_title": "Effacer toutes les clés ?",
-  "screen.mcgatekeeper.clear_confirm_body": "Cela supprime toutes les paires de clés enregistrées. Vous devrez vous réautoriser sur chaque serveur."
+  "screen.mcgatekeeper.clear_confirm_body": "Cela supprime toutes les paires de clés enregistrées. Vous devrez vous réautoriser sur chaque serveur.",
+  "screen.mcgatekeeper.delete_confirm_title": "Supprimer la clé ?",
+  "screen.mcgatekeeper.delete_confirm_body": "Cela supprime la paire de clés enregistrée pour %s. Vous ne pourrez pas rejoindre ce serveur tant qu'un administrateur ne vous aura pas réautorisé."
 }

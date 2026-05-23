@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "已清除所有金鑰",
   "screen.mcgatekeeper.status.error": "錯誤：%s",
   "screen.mcgatekeeper.clear_confirm_title": "清除所有金鑰？",
-  "screen.mcgatekeeper.clear_confirm_body": "這將刪除所有已儲存的金鑰對。您需要在每個伺服器上重新進行授權。"
+  "screen.mcgatekeeper.clear_confirm_body": "這將刪除所有已儲存的金鑰對。您需要在每個伺服器上重新進行授權。",
+  "screen.mcgatekeeper.delete_confirm_title": "刪除金鑰？",
+  "screen.mcgatekeeper.delete_confirm_body": "這將刪除 %s 的已儲存金鑰對。在管理員重新授權之前，您將無法加入該伺服器。"
 }

@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Tutte le chiavi cancellate",
   "screen.mcgatekeeper.status.error": "Errore: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Cancellare tutte le chiavi?",
-  "screen.mcgatekeeper.clear_confirm_body": "Questo elimina tutte le coppie di chiavi salvate. Dovrai ri-autorizzarti su ogni server."
+  "screen.mcgatekeeper.clear_confirm_body": "Questo elimina tutte le coppie di chiavi salvate. Dovrai ri-autorizzarti su ogni server.",
+  "screen.mcgatekeeper.delete_confirm_title": "Eliminare la chiave?",
+  "screen.mcgatekeeper.delete_confirm_body": "Questo rimuove la coppia di chiavi salvata per %s. Non potrai unirti a quel server finché un amministratore non ti autorizza nuovamente."
 }

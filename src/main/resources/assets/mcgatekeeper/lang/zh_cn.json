@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "已清除所有密钥",
   "screen.mcgatekeeper.status.error": "错误：%s",
   "screen.mcgatekeeper.clear_confirm_title": "清除所有密钥？",
-  "screen.mcgatekeeper.clear_confirm_body": "这将删除所有已保存的密钥对。您需要在每个服务器上重新进行授权。"
+  "screen.mcgatekeeper.clear_confirm_body": "这将删除所有已保存的密钥对。您需要在每个服务器上重新进行授权。",
+  "screen.mcgatekeeper.delete_confirm_title": "删除密钥？",
+  "screen.mcgatekeeper.delete_confirm_body": "这将删除 %s 的已保存密钥对。在管理员重新授权之前，您将无法加入该服务器。"
 }

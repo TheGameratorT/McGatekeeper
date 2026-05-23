@@ -1,6 +1,8 @@
 package com.thegameratort.mcgatekeeper.client.screen;
 
+import com.thegameratort.mcgatekeeper.auth.Ed25519Util;
 import com.thegameratort.mcgatekeeper.client.McgatekeeperClient;
+import com.thegameratort.mcgatekeeper.client.auth.ClientKeyStore;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -65,11 +67,32 @@ public class KeyManagementScreen extends Screen {
     private void refreshList() {
         keyList.populate(
                 McgatekeeperClient.KEY_STORE.getEntries(),
-                entry -> {
-                    McgatekeeperClient.KEY_STORE.removeEntry(entry.serverKeyB64());
-                    refreshList();
+                (entry, immediate) -> {
+                    if (immediate) {
+                        McgatekeeperClient.KEY_STORE.removeEntry(entry.serverKeyB64());
+                        refreshList();
+                    } else {
+                        confirmDelete(entry);
+                    }
                 }
         );
+    }
+
+    private void confirmDelete(ClientKeyStore.KeyEntry entry) {
+        assert client != null;
+        String display = entry.lastKnownAddress() != null
+                ? entry.lastKnownAddress()
+                : Ed25519Util.fingerprint(entry.serverKeyB64());
+        client.setScreen(new ConfirmScreen(
+                confirmed -> {
+                    if (confirmed) {
+                        McgatekeeperClient.KEY_STORE.removeEntry(entry.serverKeyB64());
+                    }
+                    client.setScreen(this);
+                },
+                Text.translatable("screen.mcgatekeeper.delete_confirm_title"),
+                Text.translatable("screen.mcgatekeeper.delete_confirm_body", display)
+        ));
     }
 
     private String defaultFilePath() {

@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKeyListWidget.KeyEntry> {
 
@@ -25,7 +25,7 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
         return getWidth() - 36;
     }
 
-    public void populate(List<ClientKeyStore.KeyEntry> entries, Consumer<ClientKeyStore.KeyEntry> onRemove) {
+    public void populate(List<ClientKeyStore.KeyEntry> entries, BiConsumer<ClientKeyStore.KeyEntry, Boolean> onRemove) {
         clearEntries();
         for (ClientKeyStore.KeyEntry entry : entries) {
             addEntry(new KeyEntry(entry, onRemove));
@@ -42,11 +42,11 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
         private static final Identifier CROSS_BTN_HOV = Identifier.ofVanilla("widget/cross_button_highlighted");
 
         private final ClientKeyStore.KeyEntry data;
-        private final Consumer<ClientKeyStore.KeyEntry> onRemove;
+        private final BiConsumer<ClientKeyStore.KeyEntry, Boolean> onRemove;
         private final String address;
         private final String keyLabel;
 
-        KeyEntry(ClientKeyStore.KeyEntry data, Consumer<ClientKeyStore.KeyEntry> onRemove) {
+        KeyEntry(ClientKeyStore.KeyEntry data, BiConsumer<ClientKeyStore.KeyEntry, Boolean> onRemove) {
             this.data = data;
             this.onRemove = onRemove;
             this.address = data.lastKnownAddress();
@@ -84,7 +84,7 @@ public class ServerKeyListWidget extends AlwaysSelectedEntryListWidget<ServerKey
             int bx = getX() + getWidth() - BTN_SIZE - PAD;
             int by = getY() + (getHeight() - BTN_SIZE) / 2;
             if (click.x() >= bx && click.x() < bx + BTN_SIZE && click.y() >= by && click.y() < by + BTN_SIZE) {
-                onRemove.accept(data);
+                onRemove.accept(data, click.hasShift());
             }
             return true;
         }

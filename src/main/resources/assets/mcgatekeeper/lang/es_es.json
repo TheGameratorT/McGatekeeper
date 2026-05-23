@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Todas las claves eliminadas",
   "screen.mcgatekeeper.status.error": "Error: %s",
   "screen.mcgatekeeper.clear_confirm_title": "¿Borrar todas las claves?",
-  "screen.mcgatekeeper.clear_confirm_body": "Esto elimina todos los pares de claves guardados. Tendrás que volver a autorizarte en cada servidor."
+  "screen.mcgatekeeper.clear_confirm_body": "Esto elimina todos los pares de claves guardados. Tendrás que volver a autorizarte en cada servidor.",
+  "screen.mcgatekeeper.delete_confirm_title": "¿Eliminar clave?",
+  "screen.mcgatekeeper.delete_confirm_body": "Esto elimina el par de claves guardado para %s. No podrás unirte a ese servidor hasta que un administrador te vuelva a autorizar."
 }

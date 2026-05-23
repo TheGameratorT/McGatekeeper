@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Все ключи очищены",
   "screen.mcgatekeeper.status.error": "Ошибка: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Очистить все ключи?",
-  "screen.mcgatekeeper.clear_confirm_body": "Это удалит все сохранённые пары ключей. Вам потребуется повторно авторизоваться на каждом сервере."
+  "screen.mcgatekeeper.clear_confirm_body": "Это удалит все сохранённые пары ключей. Вам потребуется повторно авторизоваться на каждом сервере.",
+  "screen.mcgatekeeper.delete_confirm_title": "Удалить ключ?",
+  "screen.mcgatekeeper.delete_confirm_body": "Это удалит сохранённую пару ключей для %s. Вы не сможете войти на этот сервер, пока администратор снова вас не авторизует."
 }

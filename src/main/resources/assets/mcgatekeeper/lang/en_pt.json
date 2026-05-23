@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "All keys sent t' Davy Jones",
   "screen.mcgatekeeper.status.error": "Arr! Error: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Toss All Keys Overboard?",
-  "screen.mcgatekeeper.clear_confirm_body": "This sends all saved keys t' Davy Jones. Ye'll need t' re-authorize on each island."
+  "screen.mcgatekeeper.clear_confirm_body": "This sends all saved keys t' Davy Jones. Ye'll need t' re-authorize on each island.",
+  "screen.mcgatekeeper.delete_confirm_title": "Scuttle This Key?",
+  "screen.mcgatekeeper.delete_confirm_body": "This sinks th' saved key fer %s. Ye won't be able t' board that island 'til th' cap'n allows ye back."
 }

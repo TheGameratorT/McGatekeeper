@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "All keys cleared",
   "screen.mcgatekeeper.status.error": "Error: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Clear All Keys?",
-  "screen.mcgatekeeper.clear_confirm_body": "This deletes all saved keypairs. You will need to re-authorize on each server."
+  "screen.mcgatekeeper.clear_confirm_body": "This deletes all saved keypairs. You will need to re-authorize on each server.",
+  "screen.mcgatekeeper.delete_confirm_title": "Delete Key?",
+  "screen.mcgatekeeper.delete_confirm_body": "This removes the saved keypair for %s. You will not be able to join that server until an admin re-authorizes you."
 }

@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Todas as chaves limpas",
   "screen.mcgatekeeper.status.error": "Erro: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Limpar todas as chaves?",
-  "screen.mcgatekeeper.clear_confirm_body": "Isto elimina todos os pares de chaves guardados. Terá de se reautorizar em cada servidor."
+  "screen.mcgatekeeper.clear_confirm_body": "Isto elimina todos os pares de chaves guardados. Terá de se reautorizar em cada servidor.",
+  "screen.mcgatekeeper.delete_confirm_title": "Eliminar chave?",
+  "screen.mcgatekeeper.delete_confirm_body": "Isto remove o par de chaves guardado para %s. Não poderá entrar nesse servidor até que um administrador o reautorize."
 }

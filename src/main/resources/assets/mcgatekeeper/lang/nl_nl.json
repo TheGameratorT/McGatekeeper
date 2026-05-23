@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "Alle sleutels gewist",
   "screen.mcgatekeeper.status.error": "Fout: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Alle sleutels wissen?",
-  "screen.mcgatekeeper.clear_confirm_body": "Dit verwijdert alle opgeslagen sleutelparen. Je moet je opnieuw autoriseren op elke server."
+  "screen.mcgatekeeper.clear_confirm_body": "Dit verwijdert alle opgeslagen sleutelparen. Je moet je opnieuw autoriseren op elke server.",
+  "screen.mcgatekeeper.delete_confirm_title": "Sleutel verwijderen?",
+  "screen.mcgatekeeper.delete_confirm_body": "Dit verwijdert het opgeslagen sleutelpaar voor %s. Je kunt die server niet joinen totdat een beheerder je opnieuw autoriseert."
 }

@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "すべての鍵を削除しました",
   "screen.mcgatekeeper.status.error": "エラー: %s",
   "screen.mcgatekeeper.clear_confirm_title": "すべての鍵を削除しますか？",
-  "screen.mcgatekeeper.clear_confirm_body": "保存されたすべてのキーペアが削除されます。各サーバーで再度認証が必要になります。"
+  "screen.mcgatekeeper.clear_confirm_body": "保存されたすべてのキーペアが削除されます。各サーバーで再度認証が必要になります。",
+  "screen.mcgatekeeper.delete_confirm_title": "鍵を削除しますか？",
+  "screen.mcgatekeeper.delete_confirm_body": "%s の保存されたキーペアを削除します。管理者が再承認するまで、そのサーバーには参加できません。"
 }

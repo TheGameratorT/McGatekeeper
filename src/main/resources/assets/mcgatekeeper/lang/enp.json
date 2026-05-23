@@ -16,5 +16,7 @@
   "screen.mcgatekeeper.status.cleared": "All keys emptied",
   "screen.mcgatekeeper.status.error": "Dwale: %s",
   "screen.mcgatekeeper.clear_confirm_title": "Empty All Keys?",
-  "screen.mcgatekeeper.clear_confirm_body": "This adwashes all kept key-twains. You will need to seek leave anew on each webthew."
+  "screen.mcgatekeeper.clear_confirm_body": "This adwashes all kept key-twains. You will need to seek leave anew on each webthew.",
+  "screen.mcgatekeeper.delete_confirm_title": "Adwash This Key?",
+  "screen.mcgatekeeper.delete_confirm_body": "This adwashes the kept key-twain for %s. You will not be able to go into that webthew until a dright gives you leave anew."
 }
