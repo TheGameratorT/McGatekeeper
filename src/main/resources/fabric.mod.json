@@ -7,7 +7,11 @@
   "authors": [
     "TheGameratorT"
   ],
-  "contact": {},
+  "contact": {
+    "homepage": "https://modrinth.com/mod/gatekeeper",
+    "sources": "https://github.com/TheGameratorT/McTitleFixer",
+    "issues": "https://github.com/TheGameratorT/McTitleFixer/issues"
+  },
   "license": "LGPL-3.0",
   "icon": "assets/mcgatekeeper/icon.png",
   "environment": "*",
