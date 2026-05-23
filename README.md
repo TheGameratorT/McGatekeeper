@@ -1,5 +1,7 @@
 # McGatekeeper
 
+<img src="icon-512.jpg" alt="McGatekeeper icon" width="128" align="right" />
+
 A Fabric mod for Minecraft 1.21.x that replaces username/password login with **cryptographic key authentication**. Instead of a shared password, every player holds a unique digital key that the server recognises. No password can be guessed or stolen — only players with the right key can connect.
 
 Designed for offline-mode servers where the operator personally knows every player.
